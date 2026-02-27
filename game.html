@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ram's Bomb Diffusal – Mini Game</title>
+<style>
+/* ============================================================
+   BASE RESET & GLOBAL STYLES
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --sky-top: #0a0a1a;
+  --sky-mid: #0f1a30;
+  --sky-bottom: #1a2744;
+  --ground: #1a1a1a;
+  --ground-top: #2a2a2a;
+  --ground-dark: #111;
+  --bomb-glow: rgba(255,60,60,.7);
+  --popup-bg: rgba(0,0,0,.72);
+  --accent: #ffe066;
+  --accent2: #ff6b9d;
+  --success-green: #43e97b;
+  --fail-red: #ff4757;
+  --glass: rgba(255,255,255,.08);
+  --glass-border: rgba(255,255,255,.15);
+  --road: #2c2c2c;
+  --sidewalk: #3a3a3a;
+}
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background: var(--sky-top);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* ============================================================
+   GAME VIEWPORT
+   ============================================================ */
+#game-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background-image: url('assets/background.jpeg');
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+
+
+/* ---------- HUD (top bar) ---------- */
+#hud {
+  position: absolute;
+  top: 12px; left: 12px; right: 12px;
+  display: flex; justify-content: space-between; align-items: center;
+  color: #fff;
+  font-size: 1.1rem;
+  text-shadow: 1px 1px 3px rgba(0,0,0,.5);
+  z-index: 5;
+  pointer-events: none;
+}
+
+#hud span {
+  background: rgba(0,0,0,.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  padding: 6px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,.1);
+  font-weight: 600;
+  letter-spacing: .3px;
+}
+
+/* ============================================================
+   RAM (PLAYER CHARACTER)
+   ============================================================ */
+#ram {
+  position: absolute;
+  left: -200px;          /* absolute left corner - push to edge */
+  bottom: 0%;           /* same level as bombs */
+  width: 640px;
+  height: 800px;
+  transition: none;
+  z-index: 10;
+  image-rendering: auto;
+}
+#ram img, #ram .placeholder {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  display: block;
+  /* PNG with transparent bg — no blend mode needed */
+  filter: drop-shadow(2px 4px 6px rgba(0,0,0,.4));
+}
+#ram.flip img { transform: scaleX(-1); }
+.placeholder {
+  background: #c76dff;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: bold; font-size: .75rem;
+  border-radius: 8px;
+}
+
+/* ============================================================
+   SRIKANTH (STATIC CHARACTER AT RIGHT CORNER)
+   ============================================================ */
+#srikanth-character {
+  position: absolute;
+  bottom: 0%;           /* same level as Ram and bombs */
+  right: -200px;         /* absolute right corner - push to edge */
+  width: 640px;
+  height: 800px;
+  z-index: 10;
+  image-rendering: auto;
+  pointer-events: none;
+}
+#srikanth-character img, #srikanth-character .placeholder {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(2px 4px 6px rgba(0,0,0,.4));
+}
+
+/* Dialogue box above Srikanth */
+#srikanth-dialogue {
+  position: fixed;
+  top: 20%;
+  right: 50px;
+  width: 450px;
+  max-width: 85vw;
+  background: rgba(20, 20, 50, 0.98);
+  color: #fff;
+  padding: 24px 28px;
+  border-radius: 16px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.6;
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.7),
+    0 0 0 2px rgba(255, 224, 102, 0.4);
+  z-index: 150;
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  pointer-events: none;
+}
+
+#srikanth-dialogue.active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+#srikanth-dialogue::after {
+  content: '';
+  position: absolute;
+  bottom: -16px;
+  right: 120px;
+  border: 16px solid transparent;
+  border-top-color: rgba(20, 20, 50, 0.98);
+}
+
+/* ============================================================
+   BOMB CHECKPOINTS
+   ============================================================ */
+.bomb {
+  position: absolute;
+  bottom: 15%;
+  width: 160px; height: 160px;
+  z-index: 4;
+}
+.bomb-inner {
+  width: 100%; height: 100%;
+  background-image: url('assets/bomb.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+}
+.bomb.diffused .bomb-inner {
+  filter: brightness(1.3) hue-rotate(90deg);
+}
+/* fuse */
+.bomb-inner::before {
+  content: '';
+  position: absolute;
+  top: -14px; left: 50%;
+  transform: translateX(-50%);
+  width: 0; height: 0;
+}
+/* spark */
+.bomb-inner::after {
+  content: '';
+  position: absolute;
+  top: -28px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 0;
+}
+
+/* ============================================================
+   QUESTION MODAL (RIGHT SIDEBAR)
+   ============================================================ */
+#modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  z-index: 100;
+  pointer-events: none;
+}
+#modal-overlay.active { display: block; }
+
+#question-modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 400px;
+  max-width: 90vw;
+  background: linear-gradient(145deg, rgba(20,20,50,.96), rgba(40,25,80,.98));
+  color: #fff;
+  border-radius: 0;
+  padding: 0;
+  box-shadow:
+    -10px 0 40px rgba(0,0,0,.6),
+    0 0 0 1px rgba(255,255,255,.1),
+    inset 0 1px 0 rgba(255,255,255,.1);
+  animation: slideInFromRight .4s cubic-bezier(.16,1,.3,1);
+  overflow-y: auto;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+}
+@keyframes slideInFromRight {
+  0%   { transform: translateX(100%); }
+  100% { transform: translateX(0); }
+}
+
+/* Decorative left glow stripe */
+#question-modal::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, #43e97b, #ffe066, #ff6b9d, #43e97b);
+  background-size: 100% 200%;
+  animation: gradientShift 3s linear infinite;
+}
+@keyframes gradientShift {
+  0%   { background-position: 0 0%; }
+  100% { background-position: 0 200%; }
+}
+
+/* Modal header area */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 8px;
+  flex-shrink: 0;
+}
+.modal-header .bomb-icon {
+  font-size: 2rem;
+  animation: bombShake 1s ease-in-out infinite;
+}
+@keyframes bombShake {
+  0%, 100% { transform: rotate(0deg); }
+  25%      { transform: rotate(-8deg); }
+  75%      { transform: rotate(8deg); }
+}
+.modal-header .q-label {
+  font-size: .85rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,.5);
+  font-weight: 600;
+}
+
+/* countdown bar */
+#countdown-bar-wrap {
+  width: calc(100% - 48px);
+  height: 6px;
+  background: rgba(255,255,255,.08);
+  border-radius: 3px;
+  margin: 12px 24px 0;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+}
+#countdown-bar {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #43e97b, #ffe066, #ff6b9d);
+  border-radius: 3px;
+  transition: width .25s linear;
+  box-shadow: 0 0 10px rgba(67,233,123,.4);
+}
+
+/* Timer display */
+#timer-display {
+  text-align: center;
+  font-size: 1.8rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  margin: 12px 24px 8px;
+  color: #fff;
+  text-shadow: 0 0 20px rgba(255,224,102,.4);
+  letter-spacing: 2px;
+  flex-shrink: 0;
+}
+#timer-display.warning { color: #ff6b6b; text-shadow: 0 0 20px rgba(255,107,107,.5); }
+
+/* Question body */
+.modal-body {
+  padding: 8px 24px 24px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+#question-text {
+  font-size: 1.05rem;
+  margin-bottom: 18px;
+  line-height: 1.5;
+  font-weight: 500;
+  color: rgba(255,255,255,.92);
+}
+
+/* Option buttons — glass cards */
+.option-btn {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  background: rgba(255,255,255,.06);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 12px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-align: left;
+  transition: all .2s ease;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  position: relative;
+  overflow: hidden;
+}
+.option-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,.05), transparent);
+  pointer-events: none;
+}
+.option-btn:hover, .option-btn:focus-visible {
+  background: rgba(255,224,102,.12);
+  border-color: var(--accent);
+  transform: translateX(4px);
+  box-shadow: 0 4px 20px rgba(255,224,102,.15);
+  outline: none;
+}
+.option-btn:active { transform: translateX(4px) scale(.98); }
+.option-btn .key-hint {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent), #ffb347);
+  color: #1e1e2f;
+  font-weight: 800;
+  margin-right: 14px;
+  font-size: .85rem;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(255,224,102,.3);
+}
+
+/* ============================================================
+   SRIKANTH POPUP (speech bubble)
+   ============================================================ */
+#srikanth-popup {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0,0,0,.55);
+  align-items: center;
+  justify-content: center;
+}
+#srikanth-popup.active { display: flex; }
+
+#srikanth-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: #fff;
+  color: #222;
+  border-radius: 18px;
+  padding: 24px 28px;
+  max-width: 520px;
+  width: 90%;
+  box-shadow: 0 12px 50px rgba(0,0,0,.4);
+  animation: popIn .35s ease;
+  position: relative;
+}
+
+#srikanth-card img, #srikanth-card .placeholder {
+  width: 110px; height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 3px solid var(--accent);
+  /* PNG with transparent bg — no blend mode needed */
+  filter: drop-shadow(2px 3px 5px rgba(0,0,0,.3));
+  background: transparent;
+}
+
+.speech-bubble {
+  position: relative;
+  background: #f0f0f0;
+  border-radius: 12px;
+  padding: 14px 18px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.speech-bubble::before {
+  content: '';
+  position: absolute;
+  left: -12px; top: 50%;
+  transform: translateY(-50%);
+  border: 8px solid transparent;
+  border-right-color: #f0f0f0;
+}
+
+/* Restart button inside popup */
+#restart-btn-popup {
+  display: none;
+  margin-top: 14px;
+  padding: 10px 28px;
+  border: none;
+  border-radius: 8px;
+  background: var(--fail-red);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background .2s;
+}
+#restart-btn-popup:hover { background: #e84040; }
+#restart-btn-popup:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* ============================================================
+   FINAL CELEBRATION POPUP
+   ============================================================ */
+#final-popup {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 250;
+  background: rgba(0,0,0,.7);
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+#final-popup.active { display: flex; }
+
+#final-card {
+  text-align: center;
+  background: linear-gradient(135deg,#1e1e2f,#2d1b69);
+  color: #fff;
+  border-radius: 20px;
+  padding: 40px 32px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 12px 60px rgba(100,60,255,.5);
+  animation: popIn .45s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+#final-card h2 {
+  font-size: 1.6rem;
+  margin-bottom: 10px;
+  color: var(--accent);
+}
+
+#final-card p.aura-text {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin: 14px 0 24px;
+  color: #fff;
+}
+
+#final-card .btn-group {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.final-btn {
+  padding: 12px 28px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform .15s, background .2s;
+}
+.final-btn:hover { transform: scale(1.05); }
+.final-btn:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+
+#play-again-btn { background: var(--success-green); color: #1e1e2f; }
+#download-score-btn { background: var(--accent); color: #1e1e2f; }
+
+/* floating music notes */
+.music-note {
+  position: absolute;
+  font-size: 1.8rem;
+  animation: floatUp 2.5s ease-out forwards;
+  pointer-events: none;
+  opacity: 0;
+}
+@keyframes floatUp {
+  0%   { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-180px) scale(1.4); }
+}
+
+/* ============================================================
+   CONFETTI CANVAS
+   ============================================================ */
+#confetti-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 240;
+  pointer-events: none;
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes popIn {
+  0%   { opacity: 0; transform: scale(.7); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 600px) {
+  #ram { width: 280px; height: 360px; }
+  #srikanth-character { width: 280px; height: 360px; }
+  .bomb { width: 88px; height: 88px; }
+  #question-modal { width: 100vw; max-width: 100vw; }
+  .modal-header { padding: 16px 18px 6px; }
+  .modal-body { padding: 6px 18px 18px; }
+  #countdown-bar-wrap { width: calc(100% - 36px); margin: 10px 18px 0; }
+  #timer-display { font-size: 1.5rem; margin: 10px 18px 6px; }
+  #question-text { font-size: 0.95rem; margin-bottom: 14px; }
+  .option-btn { padding: 12px 14px; font-size: .9rem; margin-bottom: 8px; }
+  #srikanth-card { flex-direction: column; text-align: center; padding: 18px; }
+  .speech-bubble::before { display: none; }
+  #final-card { padding: 28px 18px; }
+  #srikanth-dialogue {
+    width: 90vw;
+    right: 5vw;
+    top: 15%;
+    font-size: 0.95rem;
+    padding: 18px 20px;
+  }
+  #srikanth-dialogue::after {
+    right: 40px;
+    border-width: 12px;
+  }
+}
+
+/* Focus outline for accessibility */
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Start screen */
+#start-screen {
+  position: fixed; inset: 0;
+  z-index: 300;
+  background: linear-gradient(135deg,#1a1a2e,#16213e);
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+  color: #fff;
+}
+#start-screen h1 {
+  font-size: 2.4rem;
+  margin-bottom: 8px;
+  color: var(--accent);
+  text-shadow: 0 0 20px rgba(255,224,102,.4);
+}
+#start-screen p {
+  font-size: 1.1rem;
+  margin-bottom: 28px;
+  opacity: .8;
+  max-width: 400px;
+  text-align: center;
+  line-height: 1.5;
+}
+#start-btn {
+  padding: 14px 44px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  background: var(--accent);
+  color: #1a1a2e;
+  cursor: pointer;
+  transition: transform .15s;
+}
+#start-btn:hover { transform: scale(1.07); }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     START SCREEN
+     ============================================================ -->
+<div id="start-screen" role="dialog" aria-label="Start game screen">
+  <h1>💣 Ram's Bomb Diffusal</h1>
+  <p>ROUND 2.5 — Secret Challenge!<br>🎵 Complete all 3 bombs to earn <strong>Music Aura</strong> &amp; +500 bonus points!</p>
+  <button id="start-btn" autofocus>Start Game</button>
+</div>
+
+<!-- ============================================================
+     GAME VIEWPORT
+     ============================================================ -->
+<div id="game-container">
+  <!-- HUD -->
+  <div id="hud">
+    <span id="hud-checkpoint">Checkpoint: 0 / 3</span>
+    <span id="hud-score" style="color:#c084fc;">Score: <span id="hud-score-val">0</span></span>
+    <span id="hud-time">Time: 00:00</span>
+  </div>
+
+  <!-- Player character -->
+  <div id="ram" aria-label="Ram character">
+    <!-- image inserted via JS -->
+  </div>
+
+  <!-- Static Srikanth character at right corner -->
+  <div id="srikanth-character" aria-label="Srikanth character">
+    <!-- image inserted via JS -->
+  </div>
+  
+  <!-- Dialogue box above Srikanth -->
+  <div id="srikanth-dialogue"></div>
+
+  <!-- 3 bomb checkpoints (positioned via JS) -->
+  <div class="bomb" id="bomb-0" aria-label="Bomb checkpoint 1"><div class="bomb-inner"></div></div>
+  <div class="bomb" id="bomb-1" aria-label="Bomb checkpoint 2"><div class="bomb-inner"></div></div>
+  <div class="bomb" id="bomb-2" aria-label="Bomb checkpoint 3"><div class="bomb-inner"></div></div>
+</div>
+
+<!-- ============================================================
+     QUESTION MODAL
+     ============================================================ -->
+<div id="modal-overlay" role="dialog" aria-modal="true" aria-label="Question modal">
+  <div id="question-modal">
+    <div class="modal-header">
+      <span class="bomb-icon">💣</span>
+      <span class="q-label" id="q-label">Question 1 of 3</span>
+      <span class="bomb-icon">⏱️</span>
+    </div>
+    <div id="countdown-bar-wrap"><div id="countdown-bar"></div></div>
+    <div id="timer-display">00:30</div>
+    <div class="modal-body">
+      <div id="question-text"></div>
+      <div id="options-container">
+        <!-- option buttons injected by JS -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SRIKANTH POPUP (success / failure)
+     ============================================================ -->
+<div id="srikanth-popup" role="dialog" aria-label="Result popup">
+  <div id="srikanth-card">
+    <!-- Srikanth image -->
+    <div id="srikanth-img-wrap"></div>
+    <div>
+      <div class="speech-bubble" id="srikanth-text"></div>
+      <button id="restart-btn-popup" aria-label="Restart">Restart</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     FINAL CELEBRATION POPUP
+     ============================================================ -->
+<canvas id="confetti-canvas"></canvas>
+<div id="final-popup" role="dialog" aria-label="Celebration popup">
+  <div id="final-card">
+    <h2>🎉 Congratulations! 🎉</h2>
+    <p class="aura-text">U have gained some musical aura</p>
+    <div class="btn-group">
+      <button class="final-btn" id="play-again-btn">Play Again</button>
+      <button class="final-btn" id="download-score-btn">Download Score</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     GAME SCRIPT
+     ============================================================ -->
+<script>
+/* ==============================================================
+   CONFIGURATION — edit questions, asset names, timing here
+   ============================================================== */
+
+// ----- Asset paths (adapt extensions here) -----
+const ASSETS = {
+  // Tries each candidate in order — first to load wins. Actual files use -removebg-preview.png
+  ramStanding:  ['assets/ram_standing-removebg-preview.png',  'assets/ram_standing.png',  'assets/ram_standing.jpeg', 'assets/ram_standing.jpg', 'assets/ram_standing.webp'],
+  ramWalking1:  ['assets/ram_walking1-removebg-preview.png',  'assets/ram_walking1.png',  'assets/ram_walking1.jpeg', 'assets/ram_walking1.jpg', 'assets/ram_walking1.webp'],
+  ramWalking2:  ['assets/ram_walking2-removebg-preview.png',  'assets/ram_walking2.png',  'assets/ram_walking2.jpeg', 'assets/ram_walking2.jpg', 'assets/ram_walking2.webp'],
+  ramDiffusing: ['assets/ram_diffusing-removebg-preview.png', 'assets/ram_diffusing.png', 'assets/ram_diffusing.jpeg','assets/ram_diffusing.jpg','assets/ram_diffusing.webp'],
+  srikanth:     ['assets/srikanth-removebg-preview.png',      'assets/srikanth.png',      'assets/srikanth.jpeg',     'assets/srikanth.jpg',     'assets/srikanth.webp'],
+};
+
+// ----- Audio paths -----
+const AUDIO_FILES = {
+  acb1: 'audio/ACB_1.mpeg',
+  acb2: 'audio/ACB_2.mpeg',
+  acb3: 'audio/ACB_3.mpeg',
+  acb4: 'audio/ACB_4.mpeg',
+};
+
+// ----- Dialogue text for each checkpoint -----
+const DIALOGUES = {
+  correct: [
+    "California, stanford university lo, last year ethical hacking lo. Topper vi kada",
+    "Student ga unnapude, main company firewall hack chesi crack cheste, highest package of decade offer iccharu",
+    "Dhaani, reject chesi occhesav. Enduku?"
+  ],
+  incorrect: "Baane extralu..."
+};
+
+// Resolved (first working) URLs will be stored here after preload
+const IMG = {};
+const AUDIO = {};
+
+// ----- Questions (simple coding challenges) -----
+const QUESTIONS = [
+  {
+    text: `🐛 Bug Hunt! Fix the Python function:
+
+def add(a, b):
+    return a - b
+
+What operator should replace the bug?`,
+    options: ["* (multiply)", "/ (divide)", "+ (plus)", "% (modulo)"],
+    correct: 2
+  },
+  {
+    text: `🔍 What does this JavaScript snippet print?
+
+const x = 5;
+console.log(x * 2 + 3);`,
+    options: ["8", "10", "13", "16"],
+    correct: 2
+  },
+  {
+    text: `🛠️ Which loop is guaranteed to run its body at least once?`,
+    options: ["for loop", "while loop", "do...while loop", "for...of loop"],
+    correct: 2
+  }
+];
+
+const QUESTION_TIME = 30;        // seconds per question
+const SRIKANTH_POPUP_MS = 6000;  // how long the Srikanth popup shows (ms) - increased for audio playback
+const WALK_FRAME_MS = 200;       // walking animation interval
+const PLAYER_SPEED = 4;          // pixels per frame (~60fps)
+
+/* ==============================================================
+   STATE
+   ============================================================== */
+let gameStarted = false;
+let gameOver = false;
+let questionActive = false;
+let currentCheckpoint = 0;       // next bomb to diffuse (0,1,2)
+let playerX = 40;                // px from left of container
+let movingLeft = false;
+let movingRight = false;
+let walkFrame = 0;               // 0 or 1    (toggles between walking1/2)
+let walkTimer = null;
+let timerInterval = null;
+let timeRemaining = QUESTION_TIME;
+let elapsedTime = 0;             // total game elapsed seconds
+let elapsedInterval = null;
+let answersLog = [];             // {question, chosen, correct, timeUsed}
+
+// Read imported score from Code Defuser (index.html)
+const importedScore = parseInt(localStorage.getItem('codeBlaster_score') || '0');
+const importedUsername = localStorage.getItem('codeBlaster_username') || '';
+
+/* ==============================================================
+   DOM REFS
+   ============================================================== */
+const $container   = document.getElementById('game-container');
+const $ram         = document.getElementById('ram');
+const $srikanthChar = document.getElementById('srikanth-character');
+const $srikanthDialogue = document.getElementById('srikanth-dialogue');
+const $hudCP       = document.getElementById('hud-checkpoint');
+const $hudTime     = document.getElementById('hud-time');
+const $modalOvr    = document.getElementById('modal-overlay');
+const $qModal      = document.getElementById('question-modal');
+const $qText       = document.getElementById('question-text');
+const $optWrap     = document.getElementById('options-container');
+const $countBar    = document.getElementById('countdown-bar');
+const $timerDisp   = document.getElementById('timer-display');
+const $sriPopup    = document.getElementById('srikanth-popup');
+const $sriCard     = document.getElementById('srikanth-card');
+const $sriImgWrap  = document.getElementById('srikanth-img-wrap');
+const $sriText     = document.getElementById('srikanth-text');
+const $restartBtn  = document.getElementById('restart-btn-popup');
+const $finalPopup  = document.getElementById('final-popup');
+const $playAgain   = document.getElementById('play-again-btn');
+const $downloadBtn = document.getElementById('download-score-btn');
+const $confetti    = document.getElementById('confetti-canvas');
+const $startScreen = document.getElementById('start-screen');
+const $startBtn    = document.getElementById('start-btn');
+
+const bombs = [
+  document.getElementById('bomb-0'),
+  document.getElementById('bomb-1'),
+  document.getElementById('bomb-2'),
+];
+
+/* ==============================================================
+   IMAGE PRELOADER — tries each extension, resolves first success
+   ============================================================== */
+function preloadImage(candidates) {
+  return new Promise(resolve => {
+    let i = 0;
+    function tryNext() {
+      if (i >= candidates.length) { resolve(null); return; }
+      const img = new Image();
+      img.onload = () => resolve(candidates[i]);
+      img.onerror = () => { i++; tryNext(); };
+      img.src = candidates[i];
+    }
+    tryNext();
+  });
+}
+
+async function preloadAll() {
+  const keys = Object.keys(ASSETS);
+  const results = await Promise.all(keys.map(k => preloadImage(ASSETS[k])));
+  keys.forEach((k, idx) => { IMG[k] = results[idx]; });
+  
+  // Preload audio files
+  Object.keys(AUDIO_FILES).forEach(key => {
+    const audio = new Audio(AUDIO_FILES[key]);
+    audio.preload = 'auto';
+    AUDIO[key] = audio;
+  });
+}
+
+/** Create an <img> or a placeholder <div> */
+function makeImg(key, alt) {
+  if (IMG[key]) {
+    const img = document.createElement('img');
+    img.src = IMG[key];
+    img.alt = alt || key;
+    img.draggable = false;
+    return img;
+  }
+  const div = document.createElement('div');
+  div.className = 'placeholder';
+  div.textContent = alt || key;
+  return div;
+}
+
+/* ==============================================================
+   PLAYER RENDERING
+   ============================================================== */
+function setRamImage(key) {
+  $ram.innerHTML = '';
+  $ram.appendChild(makeImg(key, 'Ram'));
+}
+
+/* ==============================================================
+   BOMB POSITIONING (responsive)
+   ============================================================== */
+function positionBombs() {
+  const cw = $container.clientWidth;
+  // Place bombs at equal distances: 33%, 50%, 67% of container width
+  const positions = [0.33, 0.50, 0.67];
+  positions.forEach((pct, i) => {
+    bombs[i].style.left = (cw * pct - 80) + 'px';
+  });
+}
+
+function getBombX(i) {
+  return parseFloat(bombs[i].style.left) + 80; // center
+}
+
+/* ==============================================================
+   COLLISION DETECTION
+   ============================================================== */
+function checkCollision() {
+  if (questionActive || gameOver) return;
+  if (currentCheckpoint >= QUESTIONS.length) return;
+  const ramCenter = playerX + 320; // half of ram width (640/2)
+  const bombCenter = getBombX(currentCheckpoint);
+  const dist = Math.abs(ramCenter - bombCenter);
+  if (dist < 120) {
+    triggerQuestion(currentCheckpoint);
+  }
+}
+
+/* ==============================================================
+   MOVEMENT LOOP
+   ============================================================== */
+function gameLoop() {
+  if (!gameStarted || gameOver) {
+    requestAnimationFrame(gameLoop);
+    return;
+  }
+  
+  // Lock movement when at a bomb (questionActive)
+  if (questionActive) {
+    requestAnimationFrame(gameLoop);
+    return;
+  }
+  
+  const cw = $container.clientWidth;
+  if (movingLeft) {
+    playerX = Math.max(-200, playerX - PLAYER_SPEED);
+    $ram.classList.add('flip');
+  }
+  if (movingRight) {
+    playerX = Math.min(cw - 640, playerX + PLAYER_SPEED);
+    $ram.classList.remove('flip');
+  }
+  $ram.style.left = playerX + 'px';
+
+  checkCollision();
+  requestAnimationFrame(gameLoop);
+}
+
+/* ==============================================================
+   WALKING ANIMATION
+   ============================================================== */
+function startWalking() {
+  if (walkTimer) return;
+  walkFrame = 0;
+  setRamImage('ramWalking1');
+  walkTimer = setInterval(() => {
+    walkFrame = 1 - walkFrame;
+    setRamImage(walkFrame === 0 ? 'ramWalking1' : 'ramWalking2');
+  }, WALK_FRAME_MS);
+}
+
+function stopWalking() {
+  if (walkTimer) { clearInterval(walkTimer); walkTimer = null; }
+  if (!questionActive) setRamImage('ramStanding');
+}
+
+/* ==============================================================
+   INPUT HANDLING
+   ============================================================== */
+const keysDown = new Set();
+
+document.addEventListener('keydown', e => {
+  if (e.repeat) return;
+  keysDown.add(e.key);
+
+  // Movement - only allow when NOT at a bomb (not questionActive)
+  if (!questionActive && !gameOver && gameStarted) {
+    if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+      movingLeft = true;
+      startWalking();
+    }
+    if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+      movingRight = true;
+      startWalking();
+    }
+    // Manual interact
+    if (e.key === ' ' || e.key === 'e' || e.key === 'E') {
+      checkCollision();
+    }
+  }
+
+  // Answer shortcuts (1-4)
+  if (questionActive && !gameOver) {
+    const num = parseInt(e.key);
+    if (num >= 1 && num <= 4) {
+      submitAnswer(num - 1);
+    }
+  }
+});
+
+document.addEventListener('keyup', e => {
+  keysDown.delete(e.key);
+  // Only process keyup if not at a bomb
+  if (!questionActive) {
+    if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+      movingLeft = false;
+      if (!movingRight) stopWalking();
+    }
+    if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+      movingRight = false;
+      if (!movingLeft) stopWalking();
+    }
+  }
+});
+
+/* ==============================================================
+   QUESTION MODAL
+   ============================================================== */
+function triggerQuestion(idx) {
+  questionActive = true;
+  movingLeft = false;
+  movingRight = false;
+  stopWalking();
+  setRamImage('ramDiffusing');
+
+  const q = QUESTIONS[idx];
+  // Update question label
+  const $qLabel = document.getElementById('q-label');
+  if ($qLabel) $qLabel.textContent = `Question ${idx + 1} of ${QUESTIONS.length}`;
+  $qText.textContent = q.text;
+  $optWrap.innerHTML = '';
+
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.setAttribute('aria-label', `Option ${i + 1}: ${opt}`);
+    btn.innerHTML = `<span class="key-hint">${i + 1}</span>${opt}`;
+    btn.addEventListener('click', () => submitAnswer(i));
+    $optWrap.appendChild(btn);
+  });
+
+  timeRemaining = QUESTION_TIME;
+  updateTimerDisplay();
+  $timerDisp.classList.remove('warning');
+  $countBar.style.width = '100%';
+
+  $modalOvr.classList.add('active');
+
+  // Focus the first option for keyboard navigation
+  setTimeout(() => {
+    const first = $optWrap.querySelector('.option-btn');
+    if (first) first.focus();
+  }, 100);
+
+  // Start countdown
+  const startStamp = Date.now();
+  timerInterval = setInterval(() => {
+    const elapsed = (Date.now() - startStamp) / 1000;
+    timeRemaining = Math.max(0, QUESTION_TIME - elapsed);
+    updateTimerDisplay();
+    $countBar.style.width = (timeRemaining / QUESTION_TIME * 100) + '%';
+    // Add warning class when time is low
+    if (timeRemaining <= 10) {
+      $timerDisp.classList.add('warning');
+    }
+    if (timeRemaining <= 0) {
+      clearInterval(timerInterval);
+      submitAnswer(-1); // time up = wrong
+    }
+  }, 250);
+}
+
+function updateTimerDisplay() {
+  const s = Math.ceil(timeRemaining);
+  const mm = String(Math.floor(s / 60)).padStart(2, '0');
+  const ss = String(s % 60).padStart(2, '0');
+  $timerDisp.textContent = `${mm}:${ss}`;
+}
+
+/* ==============================================================
+   ANSWER EVALUATION
+   ============================================================== */
+let answerSubmitted = false;
+
+function submitAnswer(chosenIdx) {
+  if (answerSubmitted) return; // prevent double submit
+  answerSubmitted = true;
+  clearInterval(timerInterval);
+  $modalOvr.classList.remove('active');
+
+  const q = QUESTIONS[currentCheckpoint];
+  const isCorrect = (chosenIdx === q.correct);
+  const timeUsed = QUESTION_TIME - Math.ceil(timeRemaining);
+
+  answersLog.push({
+    question: q.text,
+    chosen: chosenIdx >= 0 ? q.options[chosenIdx] : '(timed out)',
+    correct: q.options[q.correct],
+    timeUsed,
+    result: isCorrect ? 'correct' : 'incorrect'
+  });
+
+  if (isCorrect) {
+    bombs[currentCheckpoint].classList.add('diffused');
+    showSrikanthPopup(true, currentCheckpoint);
+  } else {
+    showSrikanthPopup(false, currentCheckpoint);
+  }
+}
+
+/* ==============================================================
+   SRIKANTH POPUP
+   ============================================================== */
+function showSrikanthPopup(success, checkpointIdx) {
+  // Don't show the central popup, show dialogue above Srikanth instead
+  
+  // Play audio and set dialogue text
+  let currentAudio = null;
+  
+  if (success) {
+    // Play corresponding audio for the checkpoint (ACB_1, ACB_2, ACB_3)
+    const audioKey = ['acb1', 'acb2', 'acb3'][checkpointIdx];
+    if (AUDIO[audioKey]) {
+      currentAudio = AUDIO[audioKey];
+      currentAudio.currentTime = 0;
+      currentAudio.play().catch(e => console.log('Audio play failed:', e));
+    }
+    $srikanthDialogue.textContent = DIALOGUES.correct[checkpointIdx];
+  } else {
+    // Play ACB_4 for wrong answer
+    if (AUDIO.acb4) {
+      currentAudio = AUDIO.acb4;
+      currentAudio.currentTime = 0;
+      currentAudio.play().catch(e => console.log('Audio play failed:', e));
+    }
+    $srikanthDialogue.textContent = DIALOGUES.incorrect;
+  }
+
+  // Show dialogue box above Srikanth
+  $srikanthDialogue.classList.add('active');
+
+  // Wait for audio to finish or use a timeout as fallback
+  let dialogueHidden = false;
+  const hideDialogue = () => {
+    if (dialogueHidden) return; // Prevent multiple calls
+    dialogueHidden = true;
+    
+    $srikanthDialogue.classList.remove('active');
+    
+    if (success) {
+      currentCheckpoint++;
+      $hudCP.textContent = `Checkpoint: ${currentCheckpoint} / 3`;
+      questionActive = false;
+      answerSubmitted = false;
+      setRamImage('ramStanding');
+
+      if (currentCheckpoint >= QUESTIONS.length) {
+        showFinalCelebration();
+      }
+    } else {
+      // Game over — show restart in Srikanth popup
+      gameOver = true;
+      questionActive = false;
+      answerSubmitted = false;
+      
+      // Show the central popup for restart button
+      $sriImgWrap.innerHTML = '';
+      const img = makeImg('srikanth', 'Srikanth');
+      if (img.tagName === 'IMG') {
+        img.style.width = '150px';
+        img.style.height = '150px';
+        img.style.borderRadius = '50%';
+        img.style.objectFit = 'cover';
+        img.style.border = '3px solid var(--accent)';
+      }
+      $sriImgWrap.appendChild(img);
+      $sriText.textContent = DIALOGUES.incorrect;
+      $restartBtn.style.display = 'inline-block';
+
+      // Also add a "Return without Aura" button
+      let returnBtn = document.getElementById('return-no-aura-btn');
+      if (!returnBtn) {
+        returnBtn = document.createElement('button');
+        returnBtn.id = 'return-no-aura-btn';
+        returnBtn.textContent = '↩ Return to Mission (no Aura)';
+        returnBtn.style.cssText = 'margin-top:10px;padding:9px 20px;border:none;border-radius:8px;background:#374151;color:#d1d5db;font-size:0.9rem;font-weight:bold;cursor:pointer;width:100%;';
+        returnBtn.onclick = () => { window.location.href = 'index.html'; };
+        $restartBtn.parentElement.appendChild(returnBtn);
+      }
+
+      $sriPopup.classList.add('active');
+    }
+  };
+
+  if (currentAudio) {
+    // Listen for audio end event
+    currentAudio.onended = hideDialogue;
+    // Fallback timeout in case audio doesn't fire ended event
+    setTimeout(hideDialogue, 8000);
+  } else {
+    // No audio, use default timeout
+    setTimeout(hideDialogue, 3000);
+  }
+}
+
+$restartBtn.addEventListener('click', restartGame);
+
+/* ==============================================================
+   FINAL CELEBRATION
+   ============================================================== */
+function showFinalCelebration() {
+  if (elapsedInterval) clearInterval(elapsedInterval);
+
+  // Save music aura flag for Code Defuser to pick up on return
+  localStorage.setItem('codeBlaster_musicAura', 'true');
+
+  // Customise final card for music theme
+  const finalCard = document.getElementById('final-card');
+  finalCard.style.background = 'linear-gradient(135deg, #1e0040, #3b0078, #1e0040)';
+  finalCard.style.boxShadow = '0 12px 60px rgba(168,85,247,0.6)';
+
+  document.querySelector('#final-card h2').innerHTML =
+    '🎵 Music Aura Unlocked! 🎵';
+  document.querySelector('#final-card h2').style.color = '#c084fc';
+  document.querySelector('#final-card p.aura-text').innerHTML =
+    `<span style="color:#fbbf24;">You\'ve earned Musical Aura!</span><br>
+     <span style="font-size:0.9rem;opacity:0.8;">Powered by 🎵 JioSaavn</span><br>
+     <span style="color:#67e8f9;font-size:0.95rem;margin-top:6px;display:block;">+500 bonus points await in Code Defuser!</span>
+     ${importedUsername ? '<span style="color:#86efac;font-size:0.85rem;">Agent: ' + importedUsername + '</span>' : ''}`;
+
+  $finalPopup.classList.add('active');
+  startConfetti();
+  spawnMusicNotes();
+}
+
+// ----- Confetti (simple canvas particles) -----
+function startConfetti() {
+  const ctx = $confetti.getContext('2d');
+  $confetti.width = window.innerWidth;
+  $confetti.height = window.innerHeight;
+  const pieces = [];
+  const colors = ['#ff6b6b','#feca57','#48dbfb','#ff9ff3','#54a0ff','#5f27cd','#01a3a4','#f368e0'];
+
+  for (let i = 0; i < 200; i++) {
+    pieces.push({
+      x: Math.random() * $confetti.width,
+      y: Math.random() * $confetti.height - $confetti.height,
+      w: Math.random() * 10 + 4,
+      h: Math.random() * 6 + 2,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      vx: (Math.random() - 0.5) * 3,
+      vy: Math.random() * 3 + 2,
+      rot: Math.random() * 360,
+      rv: (Math.random() - 0.5) * 8
+    });
+  }
+
+  let frames = 0;
+  function draw() {
+    frames++;
+    ctx.clearRect(0, 0, $confetti.width, $confetti.height);
+    pieces.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.rv;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot * Math.PI / 180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx.restore();
+    });
+    if (frames < 300) requestAnimationFrame(draw);
+    else ctx.clearRect(0, 0, $confetti.width, $confetti.height);
+  }
+  draw();
+}
+
+// ----- Floating music notes -----
+function spawnMusicNotes() {
+  const notes = ['♪', '♫', '♬', '🎵', '🎶'];
+  const card = document.getElementById('final-card');
+  for (let i = 0; i < 12; i++) {
+    setTimeout(() => {
+      const span = document.createElement('span');
+      span.className = 'music-note';
+      span.textContent = notes[Math.floor(Math.random() * notes.length)];
+      span.style.left = (Math.random() * 80 + 10) + '%';
+      span.style.bottom = '10px';
+      card.appendChild(span);
+      setTimeout(() => span.remove(), 2600);
+    }, i * 350);
+  }
+}
+
+// ----- Return to Mission (was Download Score) -----\n// Handled below in the DOMContentLoaded listener override
+
+// ----- Play Again / Restart -----
+$playAgain.addEventListener('click', restartGame);
+
+// Return to Mission button — go back to Code Defuser (index.html)
+document.getElementById('download-score-btn').addEventListener('click', () => {
+  window.location.href = 'index.html';
+});
+
+// Override download btn label
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('download-score-btn');
+  if (btn) {
+    btn.textContent = '🎮 Return to Mission';
+    btn.style.background = 'linear-gradient(135deg, #7c3aed, #db2777)';
+    btn.style.color = '#fff';
+  }
+});
+
+function restartGame() {
+  $sriPopup.classList.remove('active');
+  $finalPopup.classList.remove('active');
+  $modalOvr.classList.remove('active');
+  const ctx = $confetti.getContext('2d');
+  ctx.clearRect(0, 0, $confetti.width, $confetti.height);
+
+  gameOver = false;
+  questionActive = false;
+  answerSubmitted = false;
+  currentCheckpoint = 0;
+  playerX = -200; // Left edge corner
+  movingLeft = false;
+  movingRight = false;
+  elapsedTime = 0;
+  answersLog = [];
+  if (walkTimer) { clearInterval(walkTimer); walkTimer = null; }
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+  if (elapsedInterval) { clearInterval(elapsedInterval); elapsedInterval = null; }
+
+  bombs.forEach(b => b.classList.remove('diffused'));
+
+  $hudCP.textContent = 'Checkpoint: 0 / 3';
+  $hudTime.textContent = 'Time: 00:00';
+  $ram.style.left = playerX + 'px';
+  $ram.classList.remove('flip');
+  setRamImage('ramStanding');
+  positionBombs();
+
+  // Restart elapsed timer
+  elapsedInterval = setInterval(() => {
+    elapsedTime++;
+    const mm = String(Math.floor(elapsedTime / 60)).padStart(2, '0');
+    const ss = String(elapsedTime % 60).padStart(2, '0');
+    $hudTime.textContent = `Time: ${mm}:${ss}`;
+  }, 1000);
+}
+
+/* ==============================================================
+   INIT
+   ============================================================== */
+async function init() {
+  await preloadAll();
+
+  setRamImage('ramStanding');
+  // Position Ram at left edge
+  playerX = -200;
+  $ram.style.left = playerX + 'px';
+  
+  // Position static Srikanth at right corner
+  if ($srikanthChar) {
+    $srikanthChar.innerHTML = '';
+    $srikanthChar.appendChild(makeImg('srikanth', 'Srikanth'));
+  }
+  
+  positionBombs();
+  window.addEventListener('resize', positionBombs);
+
+  // Show imported score in HUD
+  const hudScoreVal = document.getElementById('hud-score-val');
+  if (hudScoreVal) hudScoreVal.textContent = importedScore.toLocaleString();
+  if (importedUsername) document.title = `💣 ${importedUsername} \u2014 Secret Round 2.5`;
+
+  // Start screen
+  $startBtn.addEventListener('click', () => {
+    $startScreen.style.display = 'none';
+    gameStarted = true;
+    elapsedInterval = setInterval(() => {
+      elapsedTime++;
+      const mm = String(Math.floor(elapsedTime / 60)).padStart(2, '0');
+      const ss = String(elapsedTime % 60).padStart(2, '0');
+      $hudTime.textContent = `Time: ${mm}:${ss}`;
+    }, 1000);
+  });
+
+  requestAnimationFrame(gameLoop);
+}
+
+init();
+</script>
+</body>
+</html>

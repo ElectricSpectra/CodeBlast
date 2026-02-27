@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Defuser - Wire Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+</head>
+<body class="text-green-400 flex items-center justify-center min-h-screen p-4" style="position: relative; z-index: 1;">
+    <div class="w-full max-w-7xl bg-black/80 backdrop-blur-sm rounded-2xl shadow-2xl p-6 md:p-8 border-2 border-green-500/50 transition-all duration-300" style="box-shadow: 0 0 30px rgba(0, 255, 0, 0.3), inset 0 0 20px rgba(0, 255, 0, 0.1);">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column: Code & Problem -->
+            <div class="lg:col-span-2">
+                <header class="text-left mb-6">
+                    <h1 class="text-4xl font-bold text-green-400 tracking-wider" style="text-shadow: 0 0 10px rgba(0, 255, 0, 0.8), 0 0 20px rgba(0, 255, 0, 0.4);">💣 CODE DEFUSER: WIRE EDITION</h1>
+                    <p class="text-green-500/70 mt-1 font-mono" style="text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);">[ DEBUG THE CODE OR CUT THE RIGHT WIRE ]</p>
+                </header>
+                
+                <!-- Language Selector -->
+                <div class="mb-4 flex items-center gap-3">
+                    <label class="text-green-400 font-semibold">LANGUAGE:</label>
+                    <select id="language-selector" class="bg-black text-green-400 px-4 py-2 rounded border-2 border-green-500/50 focus:outline-none focus:ring-2 focus:ring-green-500" style="text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);">
+                        <option value="all">ALL LANGUAGES</option>
+                        <option value="python">PYTHON</option>
+                        <option value="javascript">JAVASCRIPT</option>
+                        <option value="java">JAVA</option>
+                        <option value="c">C</option>
+                    </select>
+                    <span id="current-language" class="text-sm text-green-500/70 ml-2"></span>
+                </div>
+
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold mb-2 text-green-400">OBJECTIVE:</h2>
+                    <p id="problem-description" class="bg-black/60 p-4 rounded text-green-300 border-2 border-green-500/30" style="text-shadow: 0 0 5px rgba(0, 255, 0, 0.3);"></p>
+                </div>
+                <div>
+                    <h2 class="text-xl font-semibold mb-2 text-green-400">CODE:</h2>
+                    <textarea id="code-editor" class="font-mono w-full h-80 p-4 bg-black text-green-400 border-2 border-green-500/50 rounded focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all" spellcheck="false" style="text-shadow: 0 0 3px rgba(0, 255, 0, 0.5); box-shadow: inset 0 0 20px rgba(0, 255, 0, 0.1);"></textarea>
+                </div>
+                <div class="mt-6 text-center">
+                    <button id="defuse-button" class="w-full md:w-1/2 bg-green-600 hover:bg-green-500 text-black font-bold py-3 px-6 rounded text-xl transition-transform transform hover:scale-105" style="box-shadow: 0 0 20px rgba(0, 255, 0, 0.5); text-shadow: none;">
+                        [ DEFUSE CODE ]
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Column: Bomb & Status -->
+            <div class="bg-black/60 p-6 rounded-2xl border-2 border-green-500/50 flex flex-col justify-between" style="box-shadow: inset 0 0 30px rgba(0, 255, 0, 0.1);">
+                <div>
+                    <div class="flex justify-between items-center text-lg mb-4">
+                        <div class="text-green-400" style="text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);">ROUND: <span id="round-display" class="font-bold text-green-300">1</span>/5</div>
+                        <div class="text-green-400" style="text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);">Q: <span id="question-display" class="font-bold text-green-300">1</span>/5</div>
+                    </div>
+                    <div class="flex justify-between items-center text-lg mb-4">
+                        <div class="text-green-400" style="text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);">SCORE: <span id="score-display" class="font-bold text-green-300">0</span></div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-lg text-green-400" style="text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);">LIVES:</span>
+                            <div id="lives-display" class="flex space-x-1"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bomb Display -->
+                <div class="flex-grow flex flex-col items-center justify-center">
+                    <!-- Bomb Image Container -->
+                    <div id="bomb-container" class="relative bomb-casing" style="width: 100%; max-width: 400px;">
+                        <!-- Bomb Image -->
+                        <img id="bomb-image" src="bomb.png" alt="Time Bomb" class="w-full h-auto" style="filter: drop-shadow(0 0 20px rgba(0, 255, 0, 0.4));" />
+                        
+                        <!-- Timer Overlay (positioned over the bomb's display) -->
+                        <div id="timer-overlay" class="absolute" style="top: 28%; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.9); border: 2px solid #00ff00; border-radius: 4px; padding: 8px 16px; box-shadow: 0 0 20px rgba(0, 255, 0, 0.5), inset 0 0 10px rgba(0, 255, 0, 0.2);">
+                            <div id="timer-display" class="font-mono text-3xl font-bold text-green-400" style="text-shadow: 0 0 10px rgba(0, 255, 0, 0.8), 0 0 20px rgba(0, 255, 0, 0.4); letter-spacing: 2px;">60</div>
+                        </div>
+                        
+                        <!-- Wire connection points overlay -->
+                        <svg class="absolute bottom-0 left-0 w-full h-24" viewBox="0 0 100 24" preserveAspectRatio="none" style="pointer-events: none;">
+                            <defs>
+                                <filter id="wire-glow">
+                                    <feGaussianBlur stdDeviation="2" result="coloredBlur"></feGaussianBlur>
+                                    <feMerge>
+                                        <feMergeNode in="coloredBlur"></feMergeNode>
+                                        <feMergeNode in="SourceGraphic"></feMergeNode>
+                                    </feMerge>
+                                </filter>
+                            </defs>
+                            
+                            <!-- Wires extending from bomb -->
+                            <g id="wire-red" class="wire" data-color="red">
+                                <path d="M 20 0 L 20 8 Q 20 12 15 14 L 10 18" stroke="#DC2626" stroke-width="0.8" fill="none" class="wire-path" stroke-linecap="round" filter="url(#wire-glow)"/>
+                                <path d="M 20 0 L 20 8 Q 20 12 15 14 L 10 18" stroke="#EF4444" stroke-width="0.5" fill="none" class="wire-inner" stroke-linecap="round"/>
+                            </g>
+                            
+                            <g id="wire-blue" class="wire" data-color="blue">
+                                <path d="M 40 0 L 40 10 Q 40 14 35 16 L 32 18" stroke="#1D4ED8" stroke-width="0.8" fill="none" class="wire-path" stroke-linecap="round" filter="url(#wire-glow)"/>
+                                <path d="M 40 0 L 40 10 Q 40 14 35 16 L 32 18" stroke="#3B82F6" stroke-width="0.5" fill="none" class="wire-inner" stroke-linecap="round"/>
+                            </g>
+                            
+                            <g id="wire-green" class="wire" data-color="green">
+                                <path d="M 60 0 L 60 10 Q 60 14 65 16 L 68 18" stroke="#15803D" stroke-width="0.8" fill="none" class="wire-path" stroke-linecap="round" filter="url(#wire-glow)"/>
+                                <path d="M 60 0 L 60 10 Q 60 14 65 16 L 68 18" stroke="#22C55E" stroke-width="0.5" fill="none" class="wire-inner" stroke-linecap="round"/>
+                            </g>
+                            
+                            <g id="wire-yellow" class="wire" data-color="yellow">
+                                <path d="M 80 0 L 80 8 Q 80 12 85 14 L 90 18" stroke="#CA8A04" stroke-width="0.8" fill="none" class="wire-path" stroke-linecap="round" filter="url(#wire-glow)"/>
+                                <path d="M 80 0 L 80 8 Q 80 12 85 14 L 90 18" stroke="#EAB308" stroke-width="0.5" fill="none" class="wire-inner" stroke-linecap="round"/>
+                            </g>
+                            
+                            <!-- Spark container -->
+                            <g id="spark-container" class="hidden"></g>
+                        </svg>
+                    </div>
+                    
+                    <!-- Wire Cutting UI (Hidden by default) -->
+                    <div id="wire-cutting-ui" class="hidden mt-6">
+                        <div class="p-5 bg-black/80 border-2 border-green-500 rounded backdrop-blur-sm mb-4" style="box-shadow: 0 0 20px rgba(0, 255, 0, 0.4), inset 0 0 20px rgba(0, 255, 0, 0.1);">
+                            <p class="text-green-400 font-bold text-center mb-2 text-lg tracking-wide" style="text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);">⚠️ CUT A WIRE ⚠️</p>
+                            <p class="text-green-300 text-sm text-center font-mono" style="text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);">[ CHOOSE WISELY... ONE WIRE IS SAFE ]</p>
+                            <p class="text-red-400 text-xs text-center mt-2 italic" style="text-shadow: 0 0 5px rgba(255, 0, 0, 0.8);">WRONG CHOICE = 💥 BOOM 💥</p>
+                        </div>
+                        
+                        <!-- Wire Selection Buttons -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <button id="cut-red" class="wire-cut-btn bg-black/60 border-2 border-red-600 hover:border-red-400 text-green-400 font-bold py-3 px-4 rounded transition-all hover:scale-105" style="box-shadow: 0 0 10px rgba(255, 0, 0, 0.3); text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);">
+                                <span class="block text-xs uppercase tracking-wider mb-1">CUT WIRE</span>
+                                <span class="block text-lg">🔴 RED</span>
+                            </button>
+                            <button id="cut-blue" class="wire-cut-btn bg-black/60 border-2 border-blue-600 hover:border-blue-400 text-green-400 font-bold py-3 px-4 rounded transition-all hover:scale-105" style="box-shadow: 0 0 10px rgba(0, 0, 255, 0.3); text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);">
+                                <span class="block text-xs uppercase tracking-wider mb-1">CUT WIRE</span>
+                                <span class="block text-lg">🔵 BLUE</span>
+                            </button>
+                            <button id="cut-green" class="wire-cut-btn bg-black/60 border-2 border-green-600 hover:border-green-400 text-green-400 font-bold py-3 px-4 rounded transition-all hover:scale-105" style="box-shadow: 0 0 10px rgba(0, 255, 0, 0.5); text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);">
+                                <span class="block text-xs uppercase tracking-wider mb-1">CUT WIRE</span>
+                                <span class="block text-lg">🟢 GREEN</span>
+                            </button>
+                            <button id="cut-yellow" class="wire-cut-btn bg-black/60 border-2 border-yellow-600 hover:border-yellow-400 text-green-400 font-bold py-3 px-4 rounded transition-all hover:scale-105" style="box-shadow: 0 0 10px rgba(255, 255, 0, 0.3); text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);">
+                                <span class="block text-xs uppercase tracking-wider mb-1">CUT WIRE</span>
+                                <span class="block text-lg">🟡 YELLOW</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <div class="text-lg">Status: <span id="status-display" class="font-bold text-green-400">Active</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals Container -->
+    <div id="modal-container" class="fixed inset-0 z-50 hidden items-center justify-center p-4 backdrop-blur-sm bg-black/70">
+        <!-- Username Modal -->
+        <div id="username-modal" class="hidden w-full max-w-md bg-black rounded-2xl p-8 text-center shadow-2xl border-2 border-green-500" style="box-shadow: 0 0 40px rgba(0, 255, 0, 0.5), inset 0 0 30px rgba(0, 255, 0, 0.1);">
+            <h2 class="text-4xl font-bold mb-4 text-green-400" style="text-shadow: 0 0 15px rgba(0, 255, 0, 0.8);">💣 DEFUSER IDENTITY 💣</h2>
+            <p class="text-green-300 mb-6 font-mono text-sm" style="text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);">[ ENTER CREDENTIALS TO BEGIN THE MISSION ]</p>
+            <input id="username-input" type="text" maxlength="20" placeholder="ENTER USERNAME..." class="w-full p-3 mb-4 bg-black text-green-400 border-2 border-green-500/50 rounded font-mono text-center focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500" style="text-shadow: 0 0 5px rgba(0, 255, 0, 0.5); box-shadow: inset 0 0 15px rgba(0, 255, 0, 0.1);" autocomplete="off" />
+            <input id="password-input" type="password" maxlength="20" placeholder="ENTER PASSWORD..." class="w-full p-3 mb-6 bg-black text-green-400 border-2 border-green-500/50 rounded font-mono text-center focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500" style="text-shadow: 0 0 5px rgba(0, 255, 0, 0.5); box-shadow: inset 0 0 15px rgba(0, 255, 0, 0.1);" autocomplete="off" />
+            <div id="auth-error" class="hidden text-red-500 font-mono text-sm mb-4" style="text-shadow: 0 0 5px rgba(255, 0, 0, 0.8);">⚠️ INVALID PASSWORD ⚠️</div>
+            <button id="start-game-btn" class="w-full p-3 bg-green-600 hover:bg-green-500 text-black font-bold rounded-lg transition-all transform hover:scale-105" style="box-shadow: 0 0 20px rgba(0, 255, 0, 0.5); text-shadow: none;">
+                [ START MISSION ]
+            </button>
+        </div>
+        
+        <!-- Main Modal -->
+        <div id="main-modal" class="hidden w-full max-w-lg bg-black rounded p-8 text-center shadow-2xl border-2 border-green-500" style="box-shadow: 0 0 40px rgba(0, 255, 0, 0.5), inset 0 0 30px rgba(0, 255, 0, 0.1);">
+            <h2 id="modal-title" class="text-4xl font-bold mb-4 text-green-400" style="text-shadow: 0 0 15px rgba(0, 255, 0, 0.8);"></h2>
+            <p id="modal-message" class="text-green-300 mb-6 font-mono" style="text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);"></p>
+            <div id="modal-buttons" class="flex flex-col space-y-3"></div>
+        </div>
+    </div>
+
+    <div id="explosion-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

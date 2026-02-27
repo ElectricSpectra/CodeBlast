@@ -1,0 +1,1166 @@
+{
+  "rounds": [
+    {
+      "round": 1,
+      "difficulty": "very_easy",
+      "description": "Welcome, Recruit! Let's start with the basics.",
+      "questions": [
+        {
+          "id": 1,
+          "problem": "This function should return the sum of two numbers.",
+          "baseTime": 60,
+          "languages": {
+            "python": {
+              "buggyCode": "def add(a, b):\n    return a - b",
+              "correctCode": "def add(a, b):\n    return a + b",
+              "possibleSolutions": [
+                "def add(a, b):\n    return a + b",
+                "def add(a,b):\n    return a+b",
+                "def add(a, b): return a + b",
+                "def add(a, b):\n    result = a + b\n    return result",
+                "def add(a, b):\n    return(a+b)"
+              ]
+            },
+            "javascript": {
+              "buggyCode": "function add(a, b) {\n  return a - b;\n}",
+              "correctCode": "function add(a, b) {\n  return a + b;\n}",
+              "possibleSolutions": [
+                "function add(a, b) {\n  return a + b;\n}",
+                "function add(a,b){\nreturn a+b;\n}",
+                "function add(a, b) {\n  return (a + b);\n}",
+                "const add = (a, b) => a + b;",
+                "const add = (a, b) => { return a + b; };"
+              ]
+            },
+            "java": {
+              "buggyCode": "public int add(int a, int b) {\n    return a - b;\n}",
+              "correctCode": "public int add(int a, int b) {\n    return a + b;\n}",
+              "possibleSolutions": [
+                "public int add(int a, int b) {\n    return a + b;\n}",
+                "public int add(int a,int b){\nreturn a+b;\n}",
+                "public int add(int a, int b) {\n    int result = a + b;\n    return result;\n}",
+                "public int add(int a, int b) { return a + b; }"
+              ]
+            },
+            "c": {
+              "buggyCode": "int add(int a, int b) {\n    return a - b;\n}",
+              "correctCode": "int add(int a, int b) {\n    return a + b;\n}",
+              "possibleSolutions": [
+                "int add(int a, int b) {\n    return a + b;\n}",
+                "int add(int a,int b){\nreturn a+b;\n}",
+                "int add(int a, int b) {\n    int result = a + b;\n    return result;\n}",
+                "int add(int a, int b) { return a + b; }"
+              ]
+            }
+          }
+        },
+        {
+          "id": 2,
+          "problem": "This function should return true if the number is even.",
+          "baseTime": 60,
+          "languages": {
+            "python": {
+              "buggyCode": "def is_even(num):\n    return num % 2 == 1",
+              "correctCode": "def is_even(num):\n    return num % 2 == 0",
+              "possibleSolutions": [
+                "def is_even(num):\n    return num % 2 == 0",
+                "def is_even(num):\n    return num%2==0",
+                "def is_even(num): return num % 2 == 0",
+                "def is_even(num):\n    return not num % 2"
+              ]
+            },
+            "javascript": {
+              "buggyCode": "function isEven(num) {\n  return num % 2 === 1;\n}",
+              "correctCode": "function isEven(num) {\n  return num % 2 === 0;\n}",
+              "possibleSolutions": [
+                "function isEven(num) {\n  return num % 2 === 0;\n}",
+                "function isEven(num){\nreturn num%2===0;\n}",
+                "const isEven = (num) => num % 2 === 0;",
+                "const isEven = num => num % 2 === 0;",
+                "function isEven(num) { return num % 2 === 0; }"
+              ]
+            },
+            "java": {
+              "buggyCode": "public boolean isEven(int num) {\n    return num % 2 == 1;\n}",
+              "correctCode": "public boolean isEven(int num) {\n    return num % 2 == 0;\n}",
+              "possibleSolutions": [
+                "public boolean isEven(int num) {\n    return num % 2 == 0;\n}",
+                "public boolean isEven(int num){\nreturn num%2==0;\n}",
+                "public boolean isEven(int num) { return num % 2 == 0; }"
+              ]
+            },
+            "c": {
+              "buggyCode": "int isEven(int num) {\n    return num % 2 == 1;\n}",
+              "correctCode": "int isEven(int num) {\n    return num % 2 == 0;\n}",
+              "possibleSolutions": [
+                "int isEven(int num) {\n    return num % 2 == 0;\n}",
+                "int isEven(int num){\nreturn num%2==0;\n}",
+                "int isEven(int num) { return num % 2 == 0; }"
+              ]
+            }
+          }
+        },
+        {
+          "id": 3,
+          "problem": "Find the missing return statement.",
+          "baseTime": 50,
+          "languages": {
+            "python": {
+              "buggyCode": "def greet(name):\n    f\"Hello, {name}!\"",
+              "correctCode": "def greet(name):\n    return f\"Hello, {name}!\"",
+              "possibleSolutions": [
+                "def greet(name):\n    return f\"Hello, {name}!\"",
+                "def greet(name):\n    return f\"Hello, {name}!\"",
+                "def greet(name): return f\"Hello, {name}!\"",
+                "def greet(name):\n    return \"Hello, \" + name + \"!\"",
+                "def greet(name):\n    greeting = f\"Hello, {name}!\"\n    return greeting"
+              ]
+            },
+            "javascript": {
+              "buggyCode": "function greet(name) {\n  `Hello, ${name}!`;\n}",
+              "correctCode": "function greet(name) {\n  return `Hello, ${name}!`;\n}",
+              "possibleSolutions": [
+                "function greet(name) {\n  return `Hello, ${name}!`;\n}",
+                "function greet(name){\nreturn `Hello, ${name}!`;\n}",
+                "const greet = (name) => `Hello, ${name}!`;",
+                "const greet = name => `Hello, ${name}!`;",
+                "function greet(name) { return `Hello, ${name}!`; }"
+              ]
+            },
+            "java": {
+              "buggyCode": "public String greet(String name) {\n    \"Hello, \" + name + \"!\";\n}",
+              "correctCode": "public String greet(String name) {\n    return \"Hello, \" + name + \"!\";\n}",
+              "possibleSolutions": [
+                "public String greet(String name) {\n    return \"Hello, \" + name + \"!\";\n}",
+                "public String greet(String name){\nreturn \"Hello, \"+name+\"!\";\n}",
+                "public String greet(String name) { return \"Hello, \" + name + \"!\"; }",
+                "public String greet(String name) {\n    String greeting = \"Hello, \" + name + \"!\";\n    return greeting;\n}"
+              ]
+            },
+            "c": {
+              "buggyCode": "char* greet(char* name) {\n    \"Hello\";\n}",
+              "correctCode": "char* greet(char* name) {\n    return \"Hello\";\n}",
+              "possibleSolutions": [
+                "char* greet(char* name) {\n    return \"Hello\";\n}",
+                "char* greet(char* name){\nreturn \"Hello\";\n}",
+                "char* greet(char* name) { return \"Hello\"; }"
+              ]
+            }
+          }
+        },
+        {
+          "id": 4,
+          "problem": "This loop should print numbers from 1 to 5.",
+          "baseTime": 55,
+          "languages": {
+            "python": {
+              "buggyCode": "for i in range(1, 5):\n    print(i)",
+              "correctCode": "for i in range(1, 6):\n    print(i)",
+              "possibleSolutions": [
+                "for i in range(1, 6):\n    print(i)",
+                "for i in range(1,6):\n    print(i)",
+                "for i in range(1, 6): print(i)"
+              ]
+            },
+            "javascript": {
+              "buggyCode": "for (let i = 1; i < 5; i++) {\n  console.log(i);\n}",
+              "correctCode": "for (let i = 1; i <= 5; i++) {\n  console.log(i);\n}",
+              "possibleSolutions": [
+                "for (let i = 1; i <= 5; i++) {\n  console.log(i);\n}",
+                "for(let i=1;i<=5;i++){\nconsole.log(i);\n}",
+                "for (let i = 1; i <= 5; i++) { console.log(i); }",
+                "for (let i = 1; i < 6; i++) {\n  console.log(i);\n}"
+              ]
+            },
+            "java": {
+              "buggyCode": "for (int i = 1; i < 5; i++) {\n    System.out.println(i);\n}",
+              "correctCode": "for (int i = 1; i <= 5; i++) {\n    System.out.println(i);\n}",
+              "possibleSolutions": [
+                "for (int i = 1; i <= 5; i++) {\n    System.out.println(i);\n}",
+                "for(int i=1;i<=5;i++){\nSystem.out.println(i);\n}",
+                "for (int i = 1; i <= 5; i++) { System.out.println(i); }",
+                "for (int i = 1; i < 6; i++) {\n    System.out.println(i);\n}"
+              ]
+            },
+            "c": {
+              "buggyCode": "for (int i = 1; i < 5; i++) {\n    printf(\"%d\\n\", i);\n}",
+              "correctCode": "for (int i = 1; i <= 5; i++) {\n    printf(\"%d\\n\", i);\n}",
+              "possibleSolutions": [
+                "for (int i = 1; i <= 5; i++) {\n    printf(\"%d\\n\", i);\n}",
+                "for(int i=1;i<=5;i++){\nprintf(\"%d\\n\",i);\n}",
+                "for (int i = 1; i <= 5; i++) { printf(\"%d\\n\", i); }",
+                "for (int i = 1; i < 6; i++) {\n    printf(\"%d\\n\", i);\n}"
+              ]
+            }
+          }
+        },
+        {
+          "id": 5,
+          "problem": "This function should get the last element of an array/list.",
+          "baseTime": 55,
+          "languages": {
+            "python": {
+              "buggyCode": "def get_last(lst):\n    return lst[len(lst)]",
+              "correctCode": "def get_last(lst):\n    return lst[-1]",
+              "possibleSolutions": [
+                "def get_last(lst):\n    return lst[-1]",
+                "def get_last(lst):\n    return lst[len(lst)-1]",
+                "def get_last(lst): return lst[-1]",
+                "def get_last(lst):\n    return lst[len(lst) - 1]"
+              ]
+            },
+            "javascript": {
+              "buggyCode": "function getLast(arr) {\n  return arr[arr.length];\n}",
+              "correctCode": "function getLast(arr) {\n  return arr[arr.length - 1];\n}",
+              "possibleSolutions": [
+                "function getLast(arr) {\n  return arr[arr.length - 1];\n}",
+                "function getLast(arr){\nreturn arr[arr.length-1];\n}",
+                "const getLast = (arr) => arr[arr.length - 1];",
+                "const getLast = arr => arr[arr.length - 1];",
+                "function getLast(arr) { return arr[arr.length - 1]; }"
+              ]
+            },
+            "java": {
+              "buggyCode": "public int getLast(int[] arr) {\n    return arr[arr.length];\n}",
+              "correctCode": "public int getLast(int[] arr) {\n    return arr[arr.length - 1];\n}",
+              "possibleSolutions": [
+                "public int getLast(int[] arr) {\n    return arr[arr.length - 1];\n}",
+                "public int getLast(int[] arr){\nreturn arr[arr.length-1];\n}",
+                "public int getLast(int[] arr) { return arr[arr.length - 1]; }"
+              ]
+            },
+            "c": {
+              "buggyCode": "int getLast(int arr[], int size) {\n    return arr[size];\n}",
+              "correctCode": "int getLast(int arr[], int size) {\n    return arr[size - 1];\n}",
+              "possibleSolutions": [
+                "int getLast(int arr[], int size) {\n    return arr[size - 1];\n}",
+                "int getLast(int arr[],int size){\nreturn arr[size-1];\n}",
+                "int getLast(int arr[], int size) { return arr[size - 1]; }"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "difficulty": "easy",
+      "description": "Nice work! Let's add a bit more challenge.",
+      "questions": [
+        {
+          "id": 6,
+          "problem": "This function should check if a string/array is empty.",
+          "baseTime": 60,
+          "languages": {
+            "python": {
+              "buggyCode": "def is_empty(lst):\n    return len(lst) > 0",
+              "correctCode": "def is_empty(lst):\n    return len(lst) == 0",
+              "possibleSolutions": [
+                "def is_empty(lst):\n    return len(lst) == 0",
+                "def is_empty(lst):\n    return len(lst)==0",
+                "def is_empty(lst): return len(lst) == 0",
+                "def is_empty(lst):\n    return not lst",
+                "def is_empty(lst):\n    return not len(lst)"
+              ]
+            },
+            "javascript": {
+              "buggyCode": "function isEmpty(arr) {\n  return arr.length > 0;\n}",
+              "correctCode": "function isEmpty(arr) {\n  return arr.length === 0;\n}",
+              "possibleSolutions": [
+                "function isEmpty(arr) {\n  return arr.length === 0;\n}",
+                "function isEmpty(arr){\nreturn arr.length===0;\n}",
+                "const isEmpty = (arr) => arr.length === 0;",
+                "const isEmpty = arr => arr.length === 0;",
+                "function isEmpty(arr) { return arr.length === 0; }"
+              ]
+            },
+            "java": {
+              "buggyCode": "public boolean isEmpty(String str) {\n    return str.length() > 0;\n}",
+              "correctCode": "public boolean isEmpty(String str) {\n    return str.length() == 0;\n}",
+              "possibleSolutions": [
+                "public boolean isEmpty(String str) {\n    return str.length() == 0;\n}",
+                "public boolean isEmpty(String str){\nreturn str.length()==0;\n}",
+                "public boolean isEmpty(String str) { return str.length() == 0; }",
+                "public boolean isEmpty(String str) {\n    return str.isEmpty();\n}"
+              ]
+            },
+            "c": {
+              "buggyCode": "int isEmpty(char* str) {\n    return strlen(str) > 0;\n}",
+              "correctCode": "int isEmpty(char* str) {\n    return strlen(str) == 0;\n}",
+              "possibleSolutions": [
+                "int isEmpty(char* str) {\n    return strlen(str) == 0;\n}",
+                "int isEmpty(char* str){\nreturn strlen(str)==0;\n}",
+                "int isEmpty(char* str) { return strlen(str) == 0; }",
+                "int isEmpty(char* str) {\n    return !strlen(str);\n}"
+              ]
+            }
+          }
+        },
+        {
+          "id": 7,
+          "problem": "This function should compare two values for equality.",
+          "baseTime": 55,
+          "languages": {
+            "python": {
+              "buggyCode": "def is_equal(a, b):\n    return a is b",
+              "correctCode": "def is_equal(a, b):\n    return a == b",
+              "possibleSolutions": [
+                "def is_equal(a, b):\n    return a == b",
+                "def is_equal(a,b):\n    return a==b",
+                "def is_equal(a, b): return a == b"
+              ]
+            },
+            "javascript": {
+              "buggyCode": "function isEqual(a, b) {\n  return a = b;\n}",
+              "correctCode": "function isEqual(a, b) {\n  return a === b;\n}",
+              "possibleSolutions": [
+                "function isEqual(a, b) {\n  return a === b;\n}",
+                "function isEqual(a,b){\nreturn a===b;\n}",
+                "const isEqual = (a, b) => a === b;",
+                "const isEqual = (a, b) => { return a === b; };",
+                "function isEqual(a, b) { return a === b; }"
+              ]
+            },
+            "java": {
+              "buggyCode": "public boolean isEqual(int a, int b) {\n    return a = b;\n}",
+              "correctCode": "public boolean isEqual(int a, int b) {\n    return a == b;\n}",
+              "possibleSolutions": [
+                "public boolean isEqual(int a, int b) {\n    return a == b;\n}",
+                "public boolean isEqual(int a,int b){\nreturn a==b;\n}",
+                "public boolean isEqual(int a, int b) { return a == b; }"
+              ]
+            },
+            "c": {
+              "buggyCode": "int isEqual(int a, int b) {\n    return a = b;\n}",
+              "correctCode": "int isEqual(int a, int b) {\n    return a == b;\n}",
+              "possibleSolutions": [
+                "int isEqual(int a, int b) {\n    return a == b;\n}",
+                "int isEqual(int a,int b){\nreturn a==b;\n}",
+                "int isEqual(int a, int b) { return a == b; }"
+              ]
+            }
+          }
+        },
+        {
+          "id": 8,
+          "problem": "This function should multiply two numbers.",
+          "baseTime": 60,
+          "languages": {
+            "python": {
+              "buggyCode": "def multiply(a, b):\n    return a + b",
+              "correctCode": "def multiply(a, b):\n    return a * b",
+              "possibleSolutions": [
+                "def multiply(a, b):\n    return a * b",
+                "def multiply(a,b):\n    return a*b",
+                "def multiply(a, b): return a * b",
+                "def multiply(a, b):\n    result = a * b\n    return result"
+              ]
+            },
+            "javascript": {
+              "buggyCode": "function multiply(a, b) {\n  return a + b;\n}",
+              "correctCode": "function multiply(a, b) {\n  return a * b;\n}",
+              "possibleSolutions": [
+                "function multiply(a, b) {\n  return a * b;\n}",
+                "function multiply(a,b){\nreturn a*b;\n}",
+                "const multiply = (a, b) => a * b;",
+                "const multiply = (a, b) => { return a * b; };",
+                "function multiply(a, b) { return a * b; }"
+              ]
+            },
+            "java": {
+              "buggyCode": "public int multiply(int a, int b) {\n    return a + b;\n}",
+              "correctCode": "public int multiply(int a, int b) {\n    return a * b;\n}",
+              "possibleSolutions": [
+                "public int multiply(int a, int b) {\n    return a * b;\n}",
+                "public int multiply(int a,int b){\nreturn a*b;\n}",
+                "public int multiply(int a, int b) { return a * b; }",
+                "public int multiply(int a, int b) {\n    int result = a * b;\n    return result;\n}"
+              ]
+            },
+            "c": {
+              "buggyCode": "int multiply(int a, int b) {\n    return a + b;\n}",
+              "correctCode": "int multiply(int a, int b) {\n    return a * b;\n}",
+              "possibleSolutions": [
+                "int multiply(int a, int b) {\n    return a * b;\n}",
+                "int multiply(int a,int b){\nreturn a*b;\n}",
+                "int multiply(int a, int b) { return a * b; }",
+                "int multiply(int a, int b) {\n    int result = a * b;\n    return result;\n}"
+              ]
+            }
+          }
+        },
+        {
+          "id": 9,
+          "problem": "This function should check if a number is positive (greater than zero).",
+          "baseTime": 50,
+          "languages": {
+            "python": {
+              "buggyCode": "def is_positive(num):\n    return num >= 0",
+              "correctCode": "def is_positive(num):\n    return num > 0",
+              "possibleSolutions": [
+                "def is_positive(num):\n    return num > 0",
+                "def is_positive(num):\n    return num>0",
+                "def is_positive(num): return num > 0"
+              ]
+            },
+            "javascript": {
+              "buggyCode": "function isPositive(num) {\n  return num >= 0;\n}",
+              "correctCode": "function isPositive(num) {\n  return num > 0;\n}",
+              "possibleSolutions": [
+                "function isPositive(num) {\n  return num > 0;\n}",
+                "function isPositive(num){\nreturn num>0;\n}",
+                "const isPositive = (num) => num > 0;",
+                "const isPositive = num => num > 0;",
+                "function isPositive(num) { return num > 0; }"
+              ]
+            },
+            "java": {
+              "buggyCode": "public boolean isPositive(int num) {\n    return num >= 0;\n}",
+              "correctCode": "public boolean isPositive(int num) {\n    return num > 0;\n}",
+              "possibleSolutions": [
+                "public boolean isPositive(int num) {\n    return num > 0;\n}",
+                "public boolean isPositive(int num){\nreturn num>0;\n}",
+                "public boolean isPositive(int num) { return num > 0; }"
+              ]
+            },
+            "c": {
+              "buggyCode": "int isPositive(int num) {\n    return num >= 0;\n}",
+              "correctCode": "int isPositive(int num) {\n    return num > 0;\n}",
+              "possibleSolutions": [
+                "int isPositive(int num) {\n    return num > 0;\n}",
+                "int isPositive(int num){\nreturn num>0;\n}",
+                "int isPositive(int num) { return num > 0; }"
+              ]
+            }
+          }
+        },
+        {
+          "id": 10,
+          "problem": "This function should return the maximum of two numbers.",
+          "baseTime": 60,
+          "languages": {
+            "python": {
+              "buggyCode": "def max_num(a, b):\n    if a > b:\n        return b\n    return a",
+              "correctCode": "def max_num(a, b):\n    if a > b:\n        return a\n    return b",
+              "possibleSolutions": [
+                "def max_num(a, b):\n    if a > b:\n        return a\n    return b",
+                "def max_num(a,b):\n    if a>b:\n        return a\n    return b",
+                "def max_num(a, b): return a if a > b else b",
+                "def max_num(a, b):\n    return max(a, b)"
+              ]
+            },
+            "javascript": {
+              "buggyCode": "function maxNum(a, b) {\n  if (a > b) {\n    return b;\n  }\n  return a;\n}",
+              "correctCode": "function maxNum(a, b) {\n  if (a > b) {\n    return a;\n  }\n  return b;\n}",
+              "possibleSolutions": [
+                "function maxNum(a, b) {\n  if (a > b) {\n    return a;\n  }\n  return b;\n}",
+                "function maxNum(a,b){\nif(a>b){\nreturn a;\n}\nreturn b;\n}",
+                "const maxNum = (a, b) => a > b ? a : b;",
+                "function maxNum(a, b) { return a > b ? a : b; }",
+                "const maxNum = (a, b) => Math.max(a, b);"
+              ]
+            },
+            "java": {
+              "buggyCode": "public int maxNum(int a, int b) {\n    if (a > b) {\n        return b;\n    }\n    return a;\n}",
+              "correctCode": "public int maxNum(int a, int b) {\n    if (a > b) {\n        return a;\n    }\n    return b;\n}",
+              "possibleSolutions": [
+                "public int maxNum(int a, int b) {\n    if (a > b) {\n        return a;\n    }\n    return b;\n}",
+                "public int maxNum(int a,int b){\nif(a>b){\nreturn a;\n}\nreturn b;\n}",
+                "public int maxNum(int a, int b) { return a > b ? a : b; }",
+                "public int maxNum(int a, int b) {\n    return Math.max(a, b);\n}"
+              ]
+            },
+            "c": {
+              "buggyCode": "int maxNum(int a, int b) {\n    if (a > b) {\n        return b;\n    }\n    return a;\n}",
+              "correctCode": "int maxNum(int a, int b) {\n    if (a > b) {\n        return a;\n    }\n    return b;\n}",
+              "possibleSolutions": [
+                "int maxNum(int a, int b) {\n    if (a > b) {\n        return a;\n    }\n    return b;\n}",
+                "int maxNum(int a,int b){\nif(a>b){\nreturn a;\n}\nreturn b;\n}",
+                "int maxNum(int a, int b) { return a > b ? a : b; }"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "difficulty": "medium",
+      "description": "Getting tougher now. Focus!",
+      "questions": [
+        {
+          "id": 11,
+          "problem": "This should create a copy of an array, not reference it.",
+          "baseTime": 70,
+          "languages": {
+            "python": {
+              "buggyCode": "def copy_list(lst):\n    new_list = lst\n    return new_list",
+              "correctCode": "def copy_list(lst):\n    return lst.copy()",
+              "possibleSolutions": [
+                "def copy_list(lst):\n    return lst.copy()",
+                "def copy_list(lst):\n    return lst[:]",
+                "def copy_list(lst): return lst.copy()",
+                "def copy_list(lst):\n    return list(lst)",
+                "def copy_list(lst):\n    return [item for item in lst]"
+              ]
+            },
+            "javascript": {
+              "buggyCode": "function copyArray(arr) {\n  let newArr = arr;\n  return newArr;\n}",
+              "correctCode": "function copyArray(arr) {\n  return [...arr];\n}",
+              "possibleSolutions": [
+                "function copyArray(arr) {\n  return [...arr];\n}",
+                "function copyArray(arr){\nreturn [...arr];\n}",
+                "const copyArray = (arr) => [...arr];",
+                "function copyArray(arr) {\n  return arr.slice();\n}",
+                "const copyArray = arr => arr.slice();"
+              ]
+            },
+            "java": {
+              "buggyCode": "public int[] copyArray(int[] arr) {\n    int[] newArr = arr;\n    return newArr;\n}",
+              "correctCode": "public int[] copyArray(int[] arr) {\n    return arr.clone();\n}",
+              "possibleSolutions": [
+                "public int[] copyArray(int[] arr) {\n    return arr.clone();\n}",
+                "public int[] copyArray(int[] arr){\nreturn arr.clone();\n}",
+                "public int[] copyArray(int[] arr) {\n    return Arrays.copyOf(arr, arr.length);\n}"
+              ]
+            },
+            "c": {
+              "buggyCode": "int* copyArray(int* arr, int size) {\n    return arr;\n}",
+              "correctCode": "int* copyArray(int* arr, int size) {\n    int* newArr = malloc(size * sizeof(int));\n    memcpy(newArr, arr, size * sizeof(int));\n    return newArr;\n}",
+              "possibleSolutions": [
+                "int* copyArray(int* arr, int size) {\n    int* newArr = malloc(size * sizeof(int));\n    memcpy(newArr, arr, size * sizeof(int));\n    return newArr;\n}",
+                "int* copyArray(int* arr,int size){\nint* newArr=malloc(size*sizeof(int));\nmemcpy(newArr,arr,size*sizeof(int));\nreturn newArr;\n}",
+                "int* copyArray(int* arr, int size) {\n    int* newArr = malloc(size * sizeof(int));\n    for (int i = 0; i < size; i++) {\n        newArr[i] = arr[i];\n    }\n    return newArr;\n}"
+              ]
+            }
+          }
+        },
+        {
+          "id": 12,
+          "problem": "This function has an infinite loop. Fix the counter update.",
+          "baseTime": 65,
+          "languages": {
+            "python": {
+              "buggyCode": "def countdown(n):\n    while n > 0:\n        print(n)\n        n += 1",
+              "correctCode": "def countdown(n):\n    while n > 0:\n        print(n)\n        n -= 1",
+              "possibleSolutions": [
+                "def countdown(n):\n    while n > 0:\n        print(n)\n        n -= 1",
+                "def countdown(n):\n    while n>0:\n        print(n)\n        n-=1",
+                "def countdown(n):\n    for i in range(n, 0, -1):\n        print(i)"
+              ]
+            },
+            "javascript": {
+              "buggyCode": "function countdown(n) {\n  while (n > 0) {\n    console.log(n);\n    n++;\n  }\n}",
+              "correctCode": "function countdown(n) {\n  while (n > 0) {\n    console.log(n);\n    n--;\n  }\n}",
+              "possibleSolutions": [
+                "function countdown(n) {\n  while (n > 0) {\n    console.log(n);\n    n--;\n  }\n}",
+                "function countdown(n){\nwhile(n>0){\nconsole.log(n);\nn--;\n}\n}",
+                "function countdown(n) {\n  for (let i = n; i > 0; i--) {\n    console.log(i);\n  }\n}"
+              ]
+            },
+            "java": {
+              "buggyCode": "public void countdown(int n) {\n    while (n > 0) {\n        System.out.println(n);\n        n++;\n    }\n}",
+              "correctCode": "public void countdown(int n) {\n    while (n > 0) {\n        System.out.println(n);\n        n--;\n    }\n}",
+              "possibleSolutions": [
+                "public void countdown(int n) {\n    while (n > 0) {\n        System.out.println(n);\n        n--;\n    }\n}",
+                "public void countdown(int n){\nwhile(n>0){\nSystem.out.println(n);\nn--;\n}\n}",
+                "public void countdown(int n) {\n    for (int i = n; i > 0; i--) {\n        System.out.println(i);\n    }\n}"
+              ]
+            },
+            "c": {
+              "buggyCode": "void countdown(int n) {\n    while (n > 0) {\n        printf(\"%d\\n\", n);\n        n++;\n    }\n}",
+              "correctCode": "void countdown(int n) {\n    while (n > 0) {\n        printf(\"%d\\n\", n);\n        n--;\n    }\n}",
+              "possibleSolutions": [
+                "void countdown(int n) {\n    while (n > 0) {\n        printf(\"%d\\n\", n);\n        n--;\n    }\n}",
+                "void countdown(int n){\nwhile(n>0){\nprintf(\"%d\\n\",n);\nn--;\n}\n}",
+                "void countdown(int n) {\n    for (int i = n; i > 0; i--) {\n        printf(\"%d\\n\", i);\n    }\n}"
+              ]
+            }
+          }
+        },
+        {
+          "id": 13,
+          "problem": "This should concatenate/merge arrays without modifying the original.",
+          "baseTime": 70,
+          "languages": {
+            "python": {
+              "buggyCode": "def combine(list1, list2):\n    list1.extend(list2)\n    return list1",
+              "correctCode": "def combine(list1, list2):\n    return list1 + list2",
+              "possibleSolutions": [
+                "def combine(list1, list2):\n    return list1 + list2",
+                "def combine(list1,list2):\n    return list1+list2",
+                "def combine(list1, list2): return list1 + list2",
+                "def combine(list1, list2):\n    return [*list1, *list2]"
+              ]
+            },
+            "javascript": {
+              "buggyCode": "function combine(arr1, arr2) {\n  arr1.push(...arr2);\n  return arr1;\n}",
+              "correctCode": "function combine(arr1, arr2) {\n  return arr1.concat(arr2);\n}",
+              "possibleSolutions": [
+                "function combine(arr1, arr2) {\n  return arr1.concat(arr2);\n}",
+                "function combine(arr1,arr2){\nreturn arr1.concat(arr2);\n}",
+                "const combine = (arr1, arr2) => arr1.concat(arr2);",
+                "function combine(arr1, arr2) {\n  return [...arr1, ...arr2];\n}",
+                "const combine = (arr1, arr2) => [...arr1, ...arr2];"
+              ]
+            },
+            "java": {
+              "buggyCode": "public List<Integer> combine(List<Integer> l1, List<Integer> l2) {\n    l1.addAll(l2);\n    return l1;\n}",
+              "correctCode": "public List<Integer> combine(List<Integer> l1, List<Integer> l2) {\n    List<Integer> result = new ArrayList<>(l1);\n    result.addAll(l2);\n    return result;\n}",
+              "possibleSolutions": [
+                "public List<Integer> combine(List<Integer> l1, List<Integer> l2) {\n    List<Integer> result = new ArrayList<>(l1);\n    result.addAll(l2);\n    return result;\n}",
+                "public List<Integer> combine(List<Integer> l1,List<Integer> l2){\nList<Integer> result=new ArrayList<>(l1);\nresult.addAll(l2);\nreturn result;\n}",
+                "public List<Integer> combine(List<Integer> l1, List<Integer> l2) {\n    return Stream.concat(l1.stream(), l2.stream()).collect(Collectors.toList());\n}"
+              ]
+            },
+            "c": {
+              "buggyCode": "int* combine(int* a1, int s1, int* a2, int s2) {\n    return a1;\n}",
+              "correctCode": "int* combine(int* a1, int s1, int* a2, int s2) {\n    int* result = malloc((s1 + s2) * sizeof(int));\n    memcpy(result, a1, s1 * sizeof(int));\n    memcpy(result + s1, a2, s2 * sizeof(int));\n    return result;\n}",
+              "possibleSolutions": [
+                "int* combine(int* a1, int s1, int* a2, int s2) {\n    int* result = malloc((s1 + s2) * sizeof(int));\n    memcpy(result, a1, s1 * sizeof(int));\n    memcpy(result + s1, a2, s2 * sizeof(int));\n    return result;\n}",
+                "int* combine(int* a1,int s1,int* a2,int s2){\nint* result=malloc((s1+s2)*sizeof(int));\nmemcpy(result,a1,s1*sizeof(int));\nmemcpy(result+s1,a2,s2*sizeof(int));\nreturn result;\n}",
+                "int* combine(int* a1, int s1, int* a2, int s2) {\n    int* result = malloc((s1 + s2) * sizeof(int));\n    int i;\n    for (i = 0; i < s1; i++) result[i] = a1[i];\n    for (i = 0; i < s2; i++) result[s1 + i] = a2[i];\n    return result;\n}"
+              ]
+            }
+          }
+        },
+        {
+          "id": 14,
+          "problem": "This should swap two values correctly.",
+          "baseTime": 75,
+          "languages": {
+            "python": {
+              "buggyCode": "def swap(a, b):\n    temp = a\n    a = b\n    b = a\n    return a, b",
+              "correctCode": "def swap(a, b):\n    return b, a",
+              "possibleSolutions": [
+                "def swap(a, b):\n    return b, a",
+                "def swap(a,b):\n    return b,a",
+                "def swap(a, b): return b, a",
+                "def swap(a, b):\n    temp = a\n    a = b\n    b = temp\n    return a, b"
+              ]
+            },
+            "javascript": {
+              "buggyCode": "function swap(a, b) {\n  let temp = a;\n  a = b;\n  b = a;\n  return [a, b];\n}",
+              "correctCode": "function swap(a, b) {\n  return [b, a];\n}",
+              "possibleSolutions": [
+                "function swap(a, b) {\n  return [b, a];\n}",
+                "function swap(a,b){\nreturn [b,a];\n}",
+                "const swap = (a, b) => [b, a];",
+                "function swap(a, b) {\n  let temp = a;\n  a = b;\n  b = temp;\n  return [a, b];\n}"
+              ]
+            },
+            "java": {
+              "buggyCode": "public void swap(int[] arr, int i, int j) {\n    int temp = arr[i];\n    arr[i] = arr[j];\n    arr[j] = arr[i];\n}",
+              "correctCode": "public void swap(int[] arr, int i, int j) {\n    int temp = arr[i];\n    arr[i] = arr[j];\n    arr[j] = temp;\n}",
+              "possibleSolutions": [
+                "public void swap(int[] arr, int i, int j) {\n    int temp = arr[i];\n    arr[i] = arr[j];\n    arr[j] = temp;\n}",
+                "public void swap(int[] arr,int i,int j){\nint temp=arr[i];\narr[i]=arr[j];\narr[j]=temp;\n}",
+                "public void swap(int[] arr, int i, int j) { int temp = arr[i]; arr[i] = arr[j]; arr[j] = temp; }"
+              ]
+            },
+            "c": {
+              "buggyCode": "void swap(int* a, int* b) {\n    int temp = a;\n    a = b;\n    b = temp;\n}",
+              "correctCode": "void swap(int* a, int* b) {\n    int temp = *a;\n    *a = *b;\n    *b = temp;\n}",
+              "possibleSolutions": [
+                "void swap(int* a, int* b) {\n    int temp = *a;\n    *a = *b;\n    *b = temp;\n}",
+                "void swap(int* a,int* b){\nint temp=*a;\n*a=*b;\n*b=temp;\n}",
+                "void swap(int* a, int* b) { int temp = *a; *a = *b; *b = temp; }"
+              ]
+            }
+          }
+        },
+        {
+          "id": 15,
+          "problem": "This should double each value without modifying the original.",
+          "baseTime": 75,
+          "languages": {
+            "python": {
+              "buggyCode": "def double_values(numbers):\n    for i in range(len(numbers)):\n        numbers[i] *= 2\n    return numbers",
+              "correctCode": "def double_values(numbers):\n    return [n * 2 for n in numbers]",
+              "possibleSolutions": [
+                "def double_values(numbers):\n    return [n * 2 for n in numbers]",
+                "def double_values(numbers):\n    return [n*2 for n in numbers]",
+                "def double_values(numbers): return [n * 2 for n in numbers]",
+                "def double_values(numbers):\n    return list(map(lambda n: n * 2, numbers))"
+              ]
+            },
+            "javascript": {
+              "buggyCode": "function doubleValues(arr) {\n  for (let i = 0; i < arr.length; i++) {\n    arr[i] *= 2;\n  }\n  return arr;\n}",
+              "correctCode": "function doubleValues(arr) {\n  return arr.map(n => n * 2);\n}",
+              "possibleSolutions": [
+                "function doubleValues(arr) {\n  return arr.map(n => n * 2);\n}",
+                "function doubleValues(arr){\nreturn arr.map(n=>n*2);\n}",
+                "const doubleValues = (arr) => arr.map(n => n * 2);",
+                "const doubleValues = arr => arr.map(n => n * 2);"
+              ]
+            },
+            "java": {
+              "buggyCode": "public int[] doubleValues(int[] arr) {\n    for (int i = 0; i < arr.length; i++) {\n        arr[i] *= 2;\n    }\n    return arr;\n}",
+              "correctCode": "public int[] doubleValues(int[] arr) {\n    int[] result = new int[arr.length];\n    for (int i = 0; i < arr.length; i++) {\n        result[i] = arr[i] * 2;\n    }\n    return result;\n}",
+              "possibleSolutions": [
+                "public int[] doubleValues(int[] arr) {\n    int[] result = new int[arr.length];\n    for (int i = 0; i < arr.length; i++) {\n        result[i] = arr[i] * 2;\n    }\n    return result;\n}",
+                "public int[] doubleValues(int[] arr){\nint[] result=new int[arr.length];\nfor(int i=0;i<arr.length;i++){\nresult[i]=arr[i]*2;\n}\nreturn result;\n}",
+                "public int[] doubleValues(int[] arr) {\n    return Arrays.stream(arr).map(n -> n * 2).toArray();\n}"
+              ]
+            },
+            "c": {
+              "buggyCode": "int* doubleValues(int* arr, int size) {\n    for (int i = 0; i < size; i++) {\n        arr[i] *= 2;\n    }\n    return arr;\n}",
+              "correctCode": "int* doubleValues(int* arr, int size) {\n    int* result = malloc(size * sizeof(int));\n    for (int i = 0; i < size; i++) {\n        result[i] = arr[i] * 2;\n    }\n    return result;\n}",
+              "possibleSolutions": [
+                "int* doubleValues(int* arr, int size) {\n    int* result = malloc(size * sizeof(int));\n    for (int i = 0; i < size; i++) {\n        result[i] = arr[i] * 2;\n    }\n    return result;\n}",
+                "int* doubleValues(int* arr,int size){\nint* result=malloc(size*sizeof(int));\nfor(int i=0;i<size;i++){\nresult[i]=arr[i]*2;\n}\nreturn result;\n}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "difficulty": "hard",
+      "description": "Expert level. One wrong move...",
+      "questions": [
+        {
+          "id": 16,
+          "problem": "This loop variable has a scope/closure issue.",
+          "baseTime": 80,
+          "languages": {
+            "python": {
+              "buggyCode": "funcs = []\nfor i in range(3):\n    funcs.append(lambda: i)\nfor f in funcs:\n    print(f())",
+              "correctCode": "funcs = []\nfor i in range(3):\n    funcs.append(lambda x=i: x)\nfor f in funcs:\n    print(f())",
+              "possibleSolutions": [
+                "funcs = []\nfor i in range(3):\n    funcs.append(lambda x=i: x)\nfor f in funcs:\n    print(f())",
+                "funcs=[]\nfor i in range(3):\n    funcs.append(lambda x=i:x)\nfor f in funcs:\n    print(f())",
+                "funcs = []\nfor i in range(3):\n    funcs.append((lambda i: lambda: i)(i))\nfor f in funcs:\n    print(f())"
+              ]
+            },
+            "javascript": {
+              "buggyCode": "for (var i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 100);\n}",
+              "correctCode": "for (let i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 100);\n}",
+              "possibleSolutions": [
+                "for (let i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 100);\n}",
+                "for(let i=0;i<3;i++){\nsetTimeout(()=>console.log(i),100);\n}",
+                "for (var i = 0; i < 3; i++) {\n  setTimeout(((i) => () => console.log(i))(i), 100);\n}",
+                "for (var i = 0; i < 3; i++) {\n  (function(i) {\n    setTimeout(() => console.log(i), 100);\n  })(i);\n}"
+              ]
+            },
+            "java": {
+              "buggyCode": "List<Runnable> list = new ArrayList<>();\nfor (int i = 0; i < 3; i++) {\n    list.add(() -> System.out.println(i));\n}",
+              "correctCode": "List<Runnable> list = new ArrayList<>();\nfor (int i = 0; i < 3; i++) {\n    final int j = i;\n    list.add(() -> System.out.println(j));\n}",
+              "possibleSolutions": [
+                "List<Runnable> list = new ArrayList<>();\nfor (int i = 0; i < 3; i++) {\n    final int j = i;\n    list.add(() -> System.out.println(j));\n}",
+                "List<Runnable> list=new ArrayList<>();\nfor(int i=0;i<3;i++){\nfinal int j=i;\nlist.add(()->System.out.println(j));\n}",
+                "List<Runnable> list = new ArrayList<>();\nfor (int i = 0; i < 3; i++) {\n    int j = i;\n    list.add(() -> System.out.println(j));\n}"
+              ]
+            },
+            "c": {
+              "buggyCode": "int* ptrs[3];\nint i;\nfor (i = 0; i < 3; i++) {\n    ptrs[i] = &i;\n}",
+              "correctCode": "int* ptrs[3];\nfor (int i = 0; i < 3; i++) {\n    int* p = malloc(sizeof(int));\n    *p = i;\n    ptrs[i] = p;\n}",
+              "possibleSolutions": [
+                "int* ptrs[3];\nfor (int i = 0; i < 3; i++) {\n    int* p = malloc(sizeof(int));\n    *p = i;\n    ptrs[i] = p;\n}",
+                "int* ptrs[3];\nfor(int i=0;i<3;i++){\nint* p=malloc(sizeof(int));\n*p=i;\nptrs[i]=p;\n}"
+              ]
+            }
+          }
+        },
+        {
+          "id": 17,
+          "problem": "This divide function doesn't handle division by zero.",
+          "baseTime": 90,
+          "languages": {
+            "python": {
+              "buggyCode": "def divide(a, b):\n    return a / b",
+              "correctCode": "def divide(a, b):\n    if b == 0:\n        return None\n    return a / b",
+              "possibleSolutions": [
+                "def divide(a, b):\n    if b == 0:\n        return None\n    return a / b",
+                "def divide(a,b):\n    if b==0:\n        return None\n    return a/b",
+                "def divide(a, b):\n    return None if b == 0 else a / b",
+                "def divide(a, b):\n    if not b:\n        return None\n    return a / b"
+              ]
+            },
+            "javascript": {
+              "buggyCode": "function divide(a, b) {\n  return a / b;\n}",
+              "correctCode": "function divide(a, b) {\n  if (b === 0) return null;\n  return a / b;\n}",
+              "possibleSolutions": [
+                "function divide(a, b) {\n  if (b === 0) return null;\n  return a / b;\n}",
+                "function divide(a,b){\nif(b===0)return null;\nreturn a/b;\n}",
+                "const divide = (a, b) => b === 0 ? null : a / b;",
+                "function divide(a, b) {\n  return b === 0 ? null : a / b;\n}"
+              ]
+            },
+            "java": {
+              "buggyCode": "public int divide(int a, int b) {\n    return a / b;\n}",
+              "correctCode": "public Integer divide(int a, int b) {\n    if (b == 0) return null;\n    return a / b;\n}",
+              "possibleSolutions": [
+                "public Integer divide(int a, int b) {\n    if (b == 0) return null;\n    return a / b;\n}",
+                "public Integer divide(int a,int b){\nif(b==0)return null;\nreturn a/b;\n}",
+                "public Integer divide(int a, int b) {\n    return b == 0 ? null : a / b;\n}"
+              ]
+            },
+            "c": {
+              "buggyCode": "int divide(int a, int b) {\n    return a / b;\n}",
+              "correctCode": "int divide(int a, int b) {\n    if (b == 0) return 0;\n    return a / b;\n}",
+              "possibleSolutions": [
+                "int divide(int a, int b) {\n    if (b == 0) return 0;\n    return a / b;\n}",
+                "int divide(int a,int b){\nif(b==0)return 0;\nreturn a/b;\n}",
+                "int divide(int a, int b) {\n    return b == 0 ? 0 : a / b;\n}"
+              ]
+            }
+          }
+        },
+        {
+          "id": 18,
+          "problem": "This recursive factorial is missing its base case.",
+          "baseTime": 85,
+          "languages": {
+            "python": {
+              "buggyCode": "def factorial(n):\n    return n * factorial(n - 1)",
+              "correctCode": "def factorial(n):\n    if n <= 1:\n        return 1\n    return n * factorial(n - 1)",
+              "possibleSolutions": [
+                "def factorial(n):\n    if n <= 1:\n        return 1\n    return n * factorial(n - 1)",
+                "def factorial(n):\n    if n<=1:\n        return 1\n    return n*factorial(n-1)",
+                "def factorial(n): return 1 if n <= 1 else n * factorial(n - 1)",
+                "def factorial(n):\n    if n == 0 or n == 1:\n        return 1\n    return n * factorial(n - 1)"
+              ]
+            },
+            "javascript": {
+              "buggyCode": "function factorial(n) {\n  return n * factorial(n - 1);\n}",
+              "correctCode": "function factorial(n) {\n  if (n <= 1) return 1;\n  return n * factorial(n - 1);\n}",
+              "possibleSolutions": [
+                "function factorial(n) {\n  if (n <= 1) return 1;\n  return n * factorial(n - 1);\n}",
+                "function factorial(n){\nif(n<=1)return 1;\nreturn n*factorial(n-1);\n}",
+                "const factorial = (n) => n <= 1 ? 1 : n * factorial(n - 1);",
+                "function factorial(n) {\n  return n <= 1 ? 1 : n * factorial(n - 1);\n}"
+              ]
+            },
+            "java": {
+              "buggyCode": "public int factorial(int n) {\n    return n * factorial(n - 1);\n}",
+              "correctCode": "public int factorial(int n) {\n    if (n <= 1) return 1;\n    return n * factorial(n - 1);\n}",
+              "possibleSolutions": [
+                "public int factorial(int n) {\n    if (n <= 1) return 1;\n    return n * factorial(n - 1);\n}",
+                "public int factorial(int n){\nif(n<=1)return 1;\nreturn n*factorial(n-1);\n}",
+                "public int factorial(int n) {\n    return n <= 1 ? 1 : n * factorial(n - 1);\n}"
+              ]
+            },
+            "c": {
+              "buggyCode": "int factorial(int n) {\n    return n * factorial(n - 1);\n}",
+              "correctCode": "int factorial(int n) {\n    if (n <= 1) return 1;\n    return n * factorial(n - 1);\n}",
+              "possibleSolutions": [
+                "int factorial(int n) {\n    if (n <= 1) return 1;\n    return n * factorial(n - 1);\n}",
+                "int factorial(int n){\nif(n<=1)return 1;\nreturn n*factorial(n-1);\n}",
+                "int factorial(int n) {\n    return n <= 1 ? 1 : n * factorial(n - 1);\n}"
+              ]
+            }
+          }
+        },
+        {
+          "id": 19,
+          "problem": "This string copy is missing null termination.",
+          "baseTime": 90,
+          "languages": {
+            "python": {
+              "buggyCode": "def copy_str(s):\n    return s[:-1]",
+              "correctCode": "def copy_str(s):\n    return s",
+              "possibleSolutions": [
+                "def copy_str(s):\n    return s",
+                "def copy_str(s): return s",
+                "def copy_str(s):\n    return s[:]",
+                "def copy_str(s):\n    return str(s)"
+              ]
+            },
+            "javascript": {
+              "buggyCode": "function copyStr(str) {\n  return str.slice(0, -1);\n}",
+              "correctCode": "function copyStr(str) {\n  return str.slice();\n}",
+              "possibleSolutions": [
+                "function copyStr(str) {\n  return str.slice();\n}",
+                "function copyStr(str){\nreturn str.slice();\n}",
+                "const copyStr = (str) => str.slice();",
+                "function copyStr(str) {\n  return str;\n}",
+                "const copyStr = str => str;"
+              ]
+            },
+            "java": {
+              "buggyCode": "public String copyStr(String str) {\n    return str.substring(0, str.length() - 1);\n}",
+              "correctCode": "public String copyStr(String str) {\n    return new String(str);\n}",
+              "possibleSolutions": [
+                "public String copyStr(String str) {\n    return new String(str);\n}",
+                "public String copyStr(String str){\nreturn new String(str);\n}",
+                "public String copyStr(String str) {\n    return str;\n}"
+              ]
+            },
+            "c": {
+              "buggyCode": "void copyString(char* dest, char* src) {\n    while (*src) {\n        *dest++ = *src++;\n    }\n}",
+              "correctCode": "void copyString(char* dest, char* src) {\n    while (*src) {\n        *dest++ = *src++;\n    }\n    *dest = '\\0';\n}",
+              "possibleSolutions": [
+                "void copyString(char* dest, char* src) {\n    while (*src) {\n        *dest++ = *src++;\n    }\n    *dest = '\\0';\n}",
+                "void copyString(char* dest,char* src){\nwhile(*src){\n*dest++=*src++;\n}\n*dest='\\0';\n}",
+                "void copyString(char* dest, char* src) {\n    strcpy(dest, src);\n}"
+              ]
+            }
+          }
+        },
+        {
+          "id": 20,
+          "problem": "This async function isn't awaiting the promise.",
+          "baseTime": 85,
+          "languages": {
+            "python": {
+              "buggyCode": "async def get_data():\n    data = fetch_data()\n    return data.json()",
+              "correctCode": "async def get_data():\n    data = await fetch_data()\n    return data.json()",
+              "possibleSolutions": [
+                "async def get_data():\n    data = await fetch_data()\n    return data.json()",
+                "async def get_data():\n    data=await fetch_data()\n    return data.json()",
+                "async def get_data(): return (await fetch_data()).json()"
+              ]
+            },
+            "javascript": {
+              "buggyCode": "async function getData() {\n  const data = fetch('/api');\n  return data.json();\n}",
+              "correctCode": "async function getData() {\n  const response = await fetch('/api');\n  return response.json();\n}",
+              "possibleSolutions": [
+                "async function getData() {\n  const response = await fetch('/api');\n  return response.json();\n}",
+                "async function getData(){\nconst response=await fetch('/api');\nreturn response.json();\n}",
+                "const getData = async () => {\n  const response = await fetch('/api');\n  return response.json();\n}",
+                "async function getData() {\n  return (await fetch('/api')).json();\n}"
+              ]
+            },
+            "java": {
+              "buggyCode": "public CompletableFuture<String> getData() {\n    return fetchData().toString();\n}",
+              "correctCode": "public CompletableFuture<String> getData() {\n    return fetchData().thenApply(Object::toString);\n}",
+              "possibleSolutions": [
+                "public CompletableFuture<String> getData() {\n    return fetchData().thenApply(Object::toString);\n}",
+                "public CompletableFuture<String> getData(){\nreturn fetchData().thenApply(Object::toString);\n}",
+                "public CompletableFuture<String> getData() {\n    return fetchData().thenApply(data -> data.toString());\n}"
+              ]
+            },
+            "c": {
+              "buggyCode": "int* getData() {\n    int* data = malloc(sizeof(int));\n    return data;\n}",
+              "correctCode": "int* getData() {\n    int* data = malloc(sizeof(int));\n    if (data != NULL) *data = 0;\n    return data;\n}",
+              "possibleSolutions": [
+                "int* getData() {\n    int* data = malloc(sizeof(int));\n    if (data != NULL) *data = 0;\n    return data;\n}",
+                "int* getData(){\nint* data=malloc(sizeof(int));\nif(data!=NULL)*data=0;\nreturn data;\n}",
+                "int* getData() {\n    int* data = malloc(sizeof(int));\n    if (data) *data = 0;\n    return data;\n}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "round": 5,
+      "difficulty": "expert",
+      "description": "Final round. Masters only.",
+      "questions": [
+        {
+          "id": 21,
+          "problem": "This palindrome checker fails on mixed case and punctuation.",
+          "baseTime": 95,
+          "languages": {
+            "python": {
+              "buggyCode": "def is_palindrome(s):\n    return s == s[::-1]",
+              "correctCode": "def is_palindrome(s):\n    cleaned = ''.join(c.lower() for c in s if c.isalnum())\n    return cleaned == cleaned[::-1]",
+              "possibleSolutions": [
+                "def is_palindrome(s):\n    cleaned = ''.join(c.lower() for c in s if c.isalnum())\n    return cleaned == cleaned[::-1]",
+                "def is_palindrome(s):\n    cleaned=''.join(c.lower() for c in s if c.isalnum())\n    return cleaned==cleaned[::-1]",
+                "def is_palindrome(s):\n    cleaned = ''.join(filter(str.isalnum, s.lower()))\n    return cleaned == cleaned[::-1]"
+              ]
+            },
+            "javascript": {
+              "buggyCode": "function isPalindrome(s) {\n  return s === s.split('').reverse().join('');\n}",
+              "correctCode": "function isPalindrome(s) {\n  const cleaned = s.toLowerCase().replace(/[^a-z0-9]/g, '');\n  return cleaned === cleaned.split('').reverse().join('');\n}",
+              "possibleSolutions": [
+                "function isPalindrome(s) {\n  const cleaned = s.toLowerCase().replace(/[^a-z0-9]/g, '');\n  return cleaned === cleaned.split('').reverse().join('');\n}",
+                "function isPalindrome(s){\nconst cleaned=s.toLowerCase().replace(/[^a-z0-9]/g,'');\nreturn cleaned===cleaned.split('').reverse().join('');\n}",
+                "const isPalindrome = (s) => {\n  const cleaned = s.toLowerCase().replace(/[^a-z0-9]/g, '');\n  return cleaned === cleaned.split('').reverse().join('');\n};"
+              ]
+            },
+            "java": {
+              "buggyCode": "public boolean isPalindrome(String s) {\n    String rev = new StringBuilder(s).reverse().toString();\n    return s.equals(rev);\n}",
+              "correctCode": "public boolean isPalindrome(String s) {\n    String cleaned = s.toLowerCase().replaceAll(\"[^a-z0-9]\", \"\");\n    String rev = new StringBuilder(cleaned).reverse().toString();\n    return cleaned.equals(rev);\n}",
+              "possibleSolutions": [
+                "public boolean isPalindrome(String s) {\n    String cleaned = s.toLowerCase().replaceAll(\"[^a-z0-9]\", \"\");\n    String rev = new StringBuilder(cleaned).reverse().toString();\n    return cleaned.equals(rev);\n}",
+                "public boolean isPalindrome(String s){\nString cleaned=s.toLowerCase().replaceAll(\"[^a-z0-9]\",\"\");\nString rev=new StringBuilder(cleaned).reverse().toString();\nreturn cleaned.equals(rev);\n}"
+              ]
+            },
+            "c": {
+              "buggyCode": "int isPalindrome(char* s) {\n    int len = strlen(s);\n    for (int i = 0; i < len/2; i++) {\n        if (s[i] != s[len-1-i]) return 0;\n    }\n    return 1;\n}",
+              "correctCode": "int isPalindrome(char* s) {\n    int len = strlen(s);\n    for (int i = 0; i < len/2; i++) {\n        if (tolower(s[i]) != tolower(s[len-1-i])) return 0;\n    }\n    return 1;\n}",
+              "possibleSolutions": [
+                "int isPalindrome(char* s) {\n    int len = strlen(s);\n    for (int i = 0; i < len/2; i++) {\n        if (tolower(s[i]) != tolower(s[len-1-i])) return 0;\n    }\n    return 1;\n}",
+                "int isPalindrome(char* s){\nint len=strlen(s);\nfor(int i=0;i<len/2;i++){\nif(tolower(s[i])!=tolower(s[len-1-i]))return 0;\n}\nreturn 1;\n}"
+              ]
+            }
+          }
+        },
+        {
+          "id": 22,
+          "problem": "This memoization cache returns the wrong value.",
+          "baseTime": 100,
+          "languages": {
+            "python": {
+              "buggyCode": "def memoize(fn):\n    cache = {}\n    def wrapper(n):\n        if n in cache:\n            return n\n        result = fn(n)\n        cache[n] = result\n        return result\n    return wrapper",
+              "correctCode": "def memoize(fn):\n    cache = {}\n    def wrapper(n):\n        if n in cache:\n            return cache[n]\n        result = fn(n)\n        cache[n] = result\n        return result\n    return wrapper",
+              "possibleSolutions": [
+                "def memoize(fn):\n    cache = {}\n    def wrapper(n):\n        if n in cache:\n            return cache[n]\n        result = fn(n)\n        cache[n] = result\n        return result\n    return wrapper",
+                "def memoize(fn):\n    cache={}\n    def wrapper(n):\n        if n in cache:\n            return cache[n]\n        result=fn(n)\n        cache[n]=result\n        return result\n    return wrapper"
+              ]
+            },
+            "javascript": {
+              "buggyCode": "const memoize = (fn) => {\n  let cache = {};\n  return (n) => {\n    if (n in cache) return n;\n    let result = fn(n);\n    cache[n] = result;\n    return result;\n  }\n}",
+              "correctCode": "const memoize = (fn) => {\n  let cache = {};\n  return (n) => {\n    if (n in cache) return cache[n];\n    let result = fn(n);\n    cache[n] = result;\n    return result;\n  }\n}",
+              "possibleSolutions": [
+                "const memoize = (fn) => {\n  let cache = {};\n  return (n) => {\n    if (n in cache) return cache[n];\n    let result = fn(n);\n    cache[n] = result;\n    return result;\n  }\n}",
+                "const memoize=(fn)=>{\nlet cache={};\nreturn (n)=>{\nif(n in cache)return cache[n];\nlet result=fn(n);\ncache[n]=result;\nreturn result;\n}\n}"
+              ]
+            },
+            "java": {
+              "buggyCode": "public class Memoizer {\n    Map<Integer, Integer> cache = new HashMap<>();\n    public int compute(int n, Function<Integer, Integer> fn) {\n        if (cache.containsKey(n)) return n;\n        int result = fn.apply(n);\n        cache.put(n, result);\n        return result;\n    }\n}",
+              "correctCode": "public class Memoizer {\n    Map<Integer, Integer> cache = new HashMap<>();\n    public int compute(int n, Function<Integer, Integer> fn) {\n        if (cache.containsKey(n)) return cache.get(n);\n        int result = fn.apply(n);\n        cache.put(n, result);\n        return result;\n    }\n}",
+              "possibleSolutions": [
+                "public class Memoizer {\n    Map<Integer, Integer> cache = new HashMap<>();\n    public int compute(int n, Function<Integer, Integer> fn) {\n        if (cache.containsKey(n)) return cache.get(n);\n        int result = fn.apply(n);\n        cache.put(n, result);\n        return result;\n    }\n}",
+                "public class Memoizer{\nMap<Integer,Integer> cache=new HashMap<>();\npublic int compute(int n,Function<Integer,Integer> fn){\nif(cache.containsKey(n))return cache.get(n);\nint result=fn.apply(n);\ncache.put(n,result);\nreturn result;\n}\n}"
+              ]
+            },
+            "c": {
+              "buggyCode": "typedef struct {\n    int key;\n    int value;\n} CacheEntry;\n\nint memoized_result(int n, CacheEntry* cache, int size) {\n    for (int i = 0; i < size; i++) {\n        if (cache[i].key == n) return n;\n    }\n    return -1;\n}",
+              "correctCode": "typedef struct {\n    int key;\n    int value;\n} CacheEntry;\n\nint memoized_result(int n, CacheEntry* cache, int size) {\n    for (int i = 0; i < size; i++) {\n        if (cache[i].key == n) return cache[i].value;\n    }\n    return -1;\n}",
+              "possibleSolutions": [
+                "typedef struct {\n    int key;\n    int value;\n} CacheEntry;\n\nint memoized_result(int n, CacheEntry* cache, int size) {\n    for (int i = 0; i < size; i++) {\n        if (cache[i].key == n) return cache[i].value;\n    }\n    return -1;\n}",
+                "typedef struct{\nint key;\nint value;\n}CacheEntry;\n\nint memoized_result(int n,CacheEntry* cache,int size){\nfor(int i=0;i<size;i++){\nif(cache[i].key==n)return cache[i].value;\n}\nreturn -1;\n}"
+              ]
+            }
+          }
+        },
+        {
+          "id": 23,
+          "problem": "This boolean logic has an error in the condition.",
+          "baseTime": 100,
+          "languages": {
+            "python": {
+              "buggyCode": "def is_in_range(x, low, high):\n    return x >= low or x <= high",
+              "correctCode": "def is_in_range(x, low, high):\n    return x >= low and x <= high",
+              "possibleSolutions": [
+                "def is_in_range(x, low, high):\n    return x >= low and x <= high",
+                "def is_in_range(x,low,high):\n    return x>=low and x<=high",
+                "def is_in_range(x, low, high): return x >= low and x <= high",
+                "def is_in_range(x, low, high):\n    return low <= x <= high"
+              ]
+            },
+            "javascript": {
+              "buggyCode": "function isInRange(x, low, high) {\n  return x >= low || x <= high;\n}",
+              "correctCode": "function isInRange(x, low, high) {\n  return x >= low && x <= high;\n}",
+              "possibleSolutions": [
+                "function isInRange(x, low, high) {\n  return x >= low && x <= high;\n}",
+                "function isInRange(x,low,high){\nreturn x>=low&&x<=high;\n}",
+                "const isInRange = (x, low, high) => x >= low && x <= high;",
+                "function isInRange(x, low, high) { return x >= low && x <= high; }"
+              ]
+            },
+            "java": {
+              "buggyCode": "public boolean isInRange(int x, int low, int high) {\n    return x >= low || x <= high;\n}",
+              "correctCode": "public boolean isInRange(int x, int low, int high) {\n    return x >= low && x <= high;\n}",
+              "possibleSolutions": [
+                "public boolean isInRange(int x, int low, int high) {\n    return x >= low && x <= high;\n}",
+                "public boolean isInRange(int x,int low,int high){\nreturn x>=low&&x<=high;\n}",
+                "public boolean isInRange(int x, int low, int high) { return x >= low && x <= high; }"
+              ]
+            },
+            "c": {
+              "buggyCode": "int isInRange(int x, int low, int high) {\n    return x >= low || x <= high;\n}",
+              "correctCode": "int isInRange(int x, int low, int high) {\n    return x >= low && x <= high;\n}",
+              "possibleSolutions": [
+                "int isInRange(int x, int low, int high) {\n    return x >= low && x <= high;\n}",
+                "int isInRange(int x,int low,int high){\nreturn x>=low&&x<=high;\n}",
+                "int isInRange(int x, int low, int high) { return x >= low && x <= high; }"
+              ]
+            }
+          }
+        },
+        {
+          "id": 24,
+          "problem": "This array initialization has wrong bounds checking.",
+          "baseTime": 95,
+          "languages": {
+            "python": {
+              "buggyCode": "def init_array(size):\n    arr = []\n    for i in range(size):\n        arr[i] = i\n    return arr",
+              "correctCode": "def init_array(size):\n    arr = []\n    for i in range(size):\n        arr.append(i)\n    return arr",
+              "possibleSolutions": [
+                "def init_array(size):\n    arr = []\n    for i in range(size):\n        arr.append(i)\n    return arr",
+                "def init_array(size):\n    arr=[]\n    for i in range(size):\n        arr.append(i)\n    return arr",
+                "def init_array(size):\n    return list(range(size))",
+                "def init_array(size):\n    return [i for i in range(size)]"
+              ]
+            },
+            "javascript": {
+              "buggyCode": "function initArray(size) {\n  let arr = [];\n  for (let i = 0; i <= size; i++) {\n    arr[i] = i;\n  }\n  return arr;\n}",
+              "correctCode": "function initArray(size) {\n  let arr = [];\n  for (let i = 0; i < size; i++) {\n    arr[i] = i;\n  }\n  return arr;\n}",
+              "possibleSolutions": [
+                "function initArray(size) {\n  let arr = [];\n  for (let i = 0; i < size; i++) {\n    arr[i] = i;\n  }\n  return arr;\n}",
+                "function initArray(size){\nlet arr=[];\nfor(let i=0;i<size;i++){\narr[i]=i;\n}\nreturn arr;\n}",
+                "const initArray = (size) => Array.from({length: size}, (_, i) => i);",
+                "function initArray(size) {\n  return Array.from({length: size}, (_, i) => i);\n}"
+              ]
+            },
+            "java": {
+              "buggyCode": "public int[] initArray(int size) {\n    int[] arr = new int[size];\n    for (int i = 0; i <= size; i++) {\n        arr[i] = i;\n    }\n    return arr;\n}",
+              "correctCode": "public int[] initArray(int size) {\n    int[] arr = new int[size];\n    for (int i = 0; i < size; i++) {\n        arr[i] = i;\n    }\n    return arr;\n}",
+              "possibleSolutions": [
+                "public int[] initArray(int size) {\n    int[] arr = new int[size];\n    for (int i = 0; i < size; i++) {\n        arr[i] = i;\n    }\n    return arr;\n}",
+                "public int[] initArray(int size){\nint[] arr=new int[size];\nfor(int i=0;i<size;i++){\narr[i]=i;\n}\nreturn arr;\n}"
+              ]
+            },
+            "c": {
+              "buggyCode": "int* initArray(int size) {\n    int* arr = malloc(size * sizeof(int));\n    for (int i = 0; i <= size; i++) {\n        arr[i] = i;\n    }\n    return arr;\n}",
+              "correctCode": "int* initArray(int size) {\n    int* arr = malloc(size * sizeof(int));\n    if (!arr) return NULL;\n    for (int i = 0; i < size; i++) {\n        arr[i] = i;\n    }\n    return arr;\n}",
+              "possibleSolutions": [
+                "int* initArray(int size) {\n    int* arr = malloc(size * sizeof(int));\n    if (!arr) return NULL;\n    for (int i = 0; i < size; i++) {\n        arr[i] = i;\n    }\n    return arr;\n}",
+                "int* initArray(int size){\nint* arr=malloc(size*sizeof(int));\nif(!arr)return NULL;\nfor(int i=0;i<size;i++){\narr[i]=i;\n}\nreturn arr;\n}",
+                "int* initArray(int size) {\n    int* arr = malloc(size * sizeof(int));\n    if (arr != NULL) {\n        for (int i = 0; i < size; i++) {\n            arr[i] = i;\n        }\n    }\n    return arr;\n}"
+              ]
+            }
+          }
+        },
+        {
+          "id": 25,
+          "problem": "This function loses context and arguments when called.",
+          "baseTime": 105,
+          "languages": {
+            "python": {
+              "buggyCode": "class Counter:\n    def __init__(self):\n        self.count = 0\n    def increment(self):\n        self.count += 1\n\nc = Counter()\nfunc = c.increment\nfunc()",
+              "correctCode": "class Counter:\n    def __init__(self):\n        self.count = 0\n    def increment(self):\n        self.count += 1\n\nc = Counter()\nimport types\nfunc = types.MethodType(c.increment.__func__, c)\nfunc()",
+              "possibleSolutions": [
+                "class Counter:\n    def __init__(self):\n        self.count = 0\n    def increment(self):\n        self.count += 1\n\nc = Counter()\nimport types\nfunc = types.MethodType(c.increment.__func__, c)\nfunc()",
+                "class Counter:\n    def __init__(self):\n        self.count = 0\n    def increment(self):\n        self.count += 1\n\nc = Counter()\nfunc = lambda: c.increment()\nfunc()",
+                "class Counter:\n    def __init__(self):\n        self.count = 0\n    def increment(self):\n        self.count += 1\n\nc = Counter()\nfunc = c.increment\nfunc()"
+              ]
+            },
+            "javascript": {
+              "buggyCode": "function debounce(fn, delay) {\n  let timeout;\n  return function() {\n    clearTimeout(timeout);\n    timeout = setTimeout(fn, delay);\n  }\n}",
+              "correctCode": "function debounce(fn, delay) {\n  let timeout;\n  return function(...args) {\n    const context = this;\n    clearTimeout(timeout);\n    timeout = setTimeout(() => fn.apply(context, args), delay);\n  }\n}",
+              "possibleSolutions": [
+                "function debounce(fn, delay) {\n  let timeout;\n  return function(...args) {\n    const context = this;\n    clearTimeout(timeout);\n    timeout = setTimeout(() => fn.apply(context, args), delay);\n  }\n}",
+                "function debounce(fn,delay){\nlet timeout;\nreturn function(...args){\nconst context=this;\nclearTimeout(timeout);\ntimeout=setTimeout(()=>fn.apply(context,args),delay);\n}\n}",
+                "const debounce = (fn, delay) => {\n  let timeout;\n  return function(...args) {\n    const context = this;\n    clearTimeout(timeout);\n    timeout = setTimeout(() => fn.apply(context, args), delay);\n  }\n}"
+              ]
+            },
+            "java": {
+              "buggyCode": "public class Counter {\n    private int count = 0;\n    public synchronized int getCount() { return count; }\n    public void increment() {\n        count = getCount() + 1;\n    }\n}",
+              "correctCode": "public class Counter {\n    private int count = 0;\n    public synchronized int getCount() { return count; }\n    public synchronized void increment() {\n        count++;\n    }\n}",
+              "possibleSolutions": [
+                "public class Counter {\n    private int count = 0;\n    public synchronized int getCount() { return count; }\n    public synchronized void increment() {\n        count++;\n    }\n}",
+                "public class Counter{\nprivate int count=0;\npublic synchronized int getCount(){return count;}\npublic synchronized void increment(){\ncount++;\n}\n}"
+              ]
+            },
+            "c": {
+              "buggyCode": "void processArray(int arr[], int size, void (*fn)(int)) {\n    for (int i = 0; i < size; i++) {\n        fn(arr);\n    }\n}",
+              "correctCode": "void processArray(int arr[], int size, void (*fn)(int)) {\n    for (int i = 0; i < size; i++) {\n        fn(arr[i]);\n    }\n}",
+              "possibleSolutions": [
+                "void processArray(int arr[], int size, void (*fn)(int)) {\n    for (int i = 0; i < size; i++) {\n        fn(arr[i]);\n    }\n}",
+                "void processArray(int arr[],int size,void (*fn)(int)){\nfor(int i=0;i<size;i++){\nfn(arr[i]);\n}\n}"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
