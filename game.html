@@ -593,10 +593,11 @@ body {
 #start-screen {
   position: fixed; inset: 0;
   z-index: 300;
-  background: linear-gradient(135deg,#1a1a2e,#16213e);
+  background: linear-gradient(180deg,#000d0d 0%,#001a2e 50%,#0a0a1a 100%);
   display: flex; align-items: center; justify-content: center;
   flex-direction: column;
   color: #fff;
+  padding: 0;
 }
 #start-screen h1 {
   font-size: 2.4rem;
@@ -632,9 +633,21 @@ body {
      START SCREEN
      ============================================================ -->
 <div id="start-screen" role="dialog" aria-label="Start game screen">
-  <h1>💣 Ram's Bomb Diffusal</h1>
-  <p>ROUND 2.5 — Secret Challenge!<br>🎵 Complete all 3 bombs to earn <strong>Music Aura</strong> &amp; +500 bonus points!</p>
-  <button id="start-btn" autofocus>Start Game</button>
+
+  <!-- TOP JIOSAAVN BANNER — full width strip -->
+  <div style="position:absolute;top:0;left:0;right:0;background:linear-gradient(90deg,rgba(0,0,0,0.95) 0%,rgba(0,30,30,0.98) 50%,rgba(0,0,0,0.95) 100%);border-bottom:2px solid rgba(0,210,190,0.55);box-shadow:0 4px 40px rgba(0,210,190,0.25);padding:22px 0 18px;text-align:center;">
+    <img src="JioSaavn.png" alt="JioSaavn" style="height:64px;object-fit:contain;filter:drop-shadow(0 0 22px rgba(0,210,190,0.9)) drop-shadow(0 0 8px rgba(0,210,190,0.6));margin-bottom:8px;display:block;margin-left:auto;margin-right:auto;">
+    <div style="color:rgba(0,210,190,1);font-size:0.75rem;font-weight:bold;letter-spacing:0.2em;text-transform:uppercase;">Powering This Special Round</div>
+    <div style="color:rgba(94,234,212,0.5);font-size:0.65rem;letter-spacing:0.1em;margin-top:3px;">Official Music Streaming Partner</div>
+  </div>
+
+  <!-- Main content (padded below the banner) -->
+  <div style="margin-top:160px;display:flex;flex-direction:column;align-items:center;">
+    <h1>💣 Ram's Bomb Diffusal</h1>
+    <p>ROUND 2.5 — Secret Challenge!<br>🎵 Complete all 3 bombs to earn <strong>Music Aura</strong> &amp; +500 bonus points!</p>
+    <button id="start-btn" autofocus>Start Game</button>
+  </div>
+
 </div>
 
 <!-- ============================================================
@@ -1235,7 +1248,7 @@ function showFinalCelebration() {
   document.querySelector('#final-card h2').style.color = '#c084fc';
   document.querySelector('#final-card p.aura-text').innerHTML =
     `<span style="color:#fbbf24;">You\'ve earned Musical Aura!</span><br>
-     <span style="font-size:0.9rem;opacity:0.8;">Powered by 🎵 JioSaavn</span><br>
+     <span style="display:inline-flex;align-items:center;gap:8px;background:rgba(0,25,25,0.85);padding:5px 14px;border-radius:10px;border:1px solid rgba(0,210,190,0.45);margin:6px 0;box-shadow:0 0 12px rgba(0,210,190,0.2);"><img src="JioSaavn.png" alt="JioSaavn" style="height:20px;filter:drop-shadow(0 0 6px rgba(0,210,190,0.75));"><span style="color:rgba(94,234,212,0.95);font-size:0.7rem;font-weight:bold;letter-spacing:0.08em;">POWERED BY JIOSAAVN</span></span><br>
      <span style="color:#67e8f9;font-size:0.95rem;margin-top:6px;display:block;">+500 bonus points await in Code Defuser!</span>
      ${importedUsername ? '<span style="color:#86efac;font-size:0.85rem;">Agent: ' + importedUsername + '</span>' : ''}`;
 
