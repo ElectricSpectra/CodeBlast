@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Defuser — Leaderboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+    <style>
+        body { font-family: 'Roboto Mono', monospace; background: #000; }
+
+        /* Scanline overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,255,0,0.015) 2px,
+                rgba(0,255,0,0.015) 4px
+            );
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .glow-green  { text-shadow: 0 0 10px rgba(0,255,0,0.8), 0 0 20px rgba(0,255,0,0.4); }
+        .glow-yellow { text-shadow: 0 0 10px rgba(255,224,0,0.8), 0 0 20px rgba(255,224,0,0.4); }
+        .glow-cyan   { text-shadow: 0 0 10px rgba(0,255,255,0.8), 0 0 20px rgba(0,255,255,0.4); }
+        .glow-red    { text-shadow: 0 0 10px rgba(255,60,60,0.8),  0 0 20px rgba(255,60,60,0.4); }
+
+        .box-glow    { box-shadow: 0 0 30px rgba(0,255,0,0.3), inset 0 0 20px rgba(0,255,0,0.07); }
+        .box-glow-sm { box-shadow: 0 0 12px rgba(0,255,0,0.2); }
+        .box-glow-gold { box-shadow: 0 0 18px rgba(255,215,0,0.5); }
+        .box-glow-silver { box-shadow: 0 0 12px rgba(192,192,192,0.4); }
+        .box-glow-bronze { box-shadow: 0 0 12px rgba(205,127,50,0.4); }
+
+        /* Blinking cursor */
+        .cursor::after { content: '█'; animation: blink 1s step-end infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* Rank badge pulse for #1 */
+        .rank-1-badge { animation: rankPulse 2s ease-in-out infinite; }
+        @keyframes rankPulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(255,215,0,0.5); }
+            50%       { box-shadow: 0 0 25px rgba(255,215,0,0.9); }
+        }
+
+        /* Row hover */
+        .leaderboard-row { transition: transform 0.15s, box-shadow 0.15s; }
+        .leaderboard-row:hover { transform: translateX(4px); }
+
+        /* Shimmer on top-3 rows */
+        .shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+        .shimmer::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 60%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            animation: shimmerMove 3s linear infinite;
+        }
+        @keyframes shimmerMove { to { left: 200%; } }
+
+        /* Refresh spin */
+        .spin { animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Live dot */
+        .live-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 6px #22c55e;
+            animation: livePulse 1.4s ease-in-out infinite;
+        }
+        @keyframes livePulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50%       { opacity: 0.4; transform: scale(0.7); }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0,255,0,0.05); }
+        ::-webkit-scrollbar-thumb { background: rgba(0,255,0,0.3); border-radius: 3px; }
+    </style>
+</head>
+<body class="text-green-400 min-h-screen flex flex-col items-center py-8 px-4 relative" style="z-index:1;">
+
+    <!-- Header -->
+    <div class="w-full max-w-6xl mb-8">
+        <div class="flex items-center justify-between flex-wrap gap-4">
+            <div>
+                <h1 class="text-4xl font-bold glow-green tracking-widest">💣 CODE DEFUSER</h1>
+                <p class="text-green-500/70 text-sm mt-1 tracking-widest">[ GLOBAL LEADERBOARD ]</p>
+            </div>
+            <a href="index.html"
+               class="border border-green-500/50 text-green-400 px-4 py-2 rounded text-sm hover:bg-green-500/10 transition-all tracking-wider"
+               style="box-shadow: 0 0 10px rgba(0,255,0,0.2);">
+                ← BACK TO GAME
+            </a>
+        </div>
+    </div>
+
+    <!-- Main content: 2-column flex -->
+    <div class="w-full max-w-6xl flex flex-col lg:flex-row gap-6 items-start" style="z-index:1;">
+    <!-- Left: Leaderboard -->
+    <div class="flex-1 bg-black/80 backdrop-blur-sm rounded-2xl border-2 border-green-500/50 p-6 box-glow">
+
+        <!-- Top bar: live indicator + refresh + last-updated -->
+        <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+            <div class="flex items-center gap-2">
+                <div class="live-dot"></div>
+                <span class="text-xs text-green-500/70 tracking-widest uppercase">Live</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <span id="last-updated" class="text-xs text-green-500/50">Loading…</span>
+                <button id="refresh-btn"
+                        onclick="loadLeaderboard()"
+                        class="flex items-center gap-2 border border-green-500/40 text-green-400 px-3 py-1.5 rounded text-xs hover:bg-green-500/10 transition-all tracking-wider"
+                        style="box-shadow: 0 0 8px rgba(0,255,0,0.15);">
+                    <span id="refresh-icon">↺</span> REFRESH
+                </button>
+            </div>
+        </div>
+
+        <!-- Filter tabs -->
+        <div class="flex gap-2 mb-6 border-b border-green-500/20 pb-4 flex-wrap">
+            <button class="tab-btn active-tab px-4 py-1.5 rounded text-xs tracking-wider font-bold transition-all"
+                    onclick="setFilter('all', this)">ALL TIME</button>
+            <button class="tab-btn px-4 py-1.5 rounded text-xs tracking-wider font-bold transition-all"
+                    onclick="setFilter('today', this)">TODAY</button>
+            <button class="tab-btn px-4 py-1.5 rounded text-xs tracking-wider font-bold transition-all"
+                    onclick="setFilter('week', this)">THIS WEEK</button>
+        </div>
+
+        <!-- Stats bar -->
+        <div id="stats-bar" class="grid grid-cols-3 gap-3 mb-6 text-center">
+            <div class="bg-black/60 border border-green-500/20 rounded p-3">
+                <div class="text-xl font-bold text-green-300 glow-green" id="stat-players">—</div>
+                <div class="text-xs text-green-500/60 mt-1 tracking-wider">PLAYERS</div>
+            </div>
+            <div class="bg-black/60 border border-green-500/20 rounded p-3">
+                <div class="text-xl font-bold text-yellow-400 glow-yellow" id="stat-top">—</div>
+                <div class="text-xs text-green-500/60 mt-1 tracking-wider">TOP SCORE</div>
+            </div>
+            <div class="bg-black/60 border border-green-500/20 rounded p-3">
+                <div class="text-xl font-bold text-cyan-400 glow-cyan" id="stat-avg">—</div>
+                <div class="text-xs text-green-500/60 mt-1 tracking-wider">AVG SCORE</div>
+            </div>
+        </div>
+
+        <!-- Column headers -->
+        <div class="grid grid-cols-12 gap-2 px-3 py-2 text-xs text-green-500/50 tracking-widest uppercase border-b border-green-500/20 mb-2">
+            <div class="col-span-1 text-center">RANK</div>
+            <div class="col-span-5">AGENT</div>
+            <div class="col-span-2 text-center">SCORE</div>
+            <div class="col-span-2 text-center">ROUND</div>
+            <div class="col-span-2 text-right">DATE</div>
+        </div>
+
+        <!-- Rows container -->
+        <div id="leaderboard-rows" class="space-y-2 min-h-48">
+            <!-- Populated by JS -->
+            <div class="text-center text-green-500/50 py-12 tracking-wider cursor">FETCHING DATA</div>
+        </div>
+
+        <!-- Empty / error state (hidden by default) -->
+        <div id="empty-state" class="hidden text-center py-12 text-green-500/50 tracking-wider">
+            [ NO SCORES RECORDED YET ]
+        </div>
+        <div id="error-state" class="hidden text-center py-12">
+            <div class="text-red-400 glow-red tracking-wider">⚠ CONNECTION FAILED</div>
+            <div class="text-green-500/50 text-xs mt-2">Showing local scores only</div>
+        </div>
+    </div> <!-- end leaderboard -->
+
+    <!-- Right: End Credits -->
+    <div class="w-full lg:w-80 bg-black/80 backdrop-blur-sm rounded-2xl border-2 border-green-500/30 p-6 box-glow-sm flex-shrink-0">
+        <div class="text-green-400 font-bold text-sm mb-5 tracking-widest border-b border-green-500/20 pb-3">🎬 END CREDITS</div>
+
+        <!-- JioSaavn -->
+        <div class="p-4 rounded-xl mb-4 text-center" style="background:rgba(0,25,25,0.8);border:1px solid rgba(0,210,190,0.45);box-shadow:0 0 18px rgba(0,210,190,0.18);">
+            <img src="JioSaavn.png" alt="JioSaavn" class="h-10 object-contain mx-auto mb-2" style="filter:drop-shadow(0 0 10px rgba(0,210,190,0.75));">
+            <div class="text-xs font-bold tracking-wider mb-1" style="color:#5eead4;">Official Music Streaming Partner</div>
+            <div class="text-xs" style="color:rgba(94,234,212,0.5);">Thanks for making Code Blast possible!</div>
+        </div>
+
+        <!-- EngineerMan -->
+        <div class="flex items-center gap-3 mb-5 p-3 rounded-xl border border-yellow-900/30" style="background:rgba(0,0,0,0.5);">
+            <img src="engineerman.png" alt="EngineerMan" class="h-9 w-9 rounded-full object-cover flex-shrink-0" style="border:1px solid rgba(250,204,21,0.4);box-shadow:0 0 8px rgba(250,204,21,0.2);">
+            <div>
+                <div class="text-yellow-400 text-xs font-bold">⚡ EngineerMan</div>
+                <div class="text-green-400/50 text-xs mt-0.5">Thanks for Piston API access 🙏</div>
+            </div>
+        </div>
+
+        <!-- X-Kernel Shoutout -->
+        <div class="border border-purple-500/30 rounded-lg p-3 mb-4" style="background:rgba(88,28,135,0.2);">
+            <div class="text-purple-300 text-xs font-bold tracking-widest mb-1">🙌 X-KERNEL TEAM</div>
+            <div class="text-purple-300/60 text-xs leading-relaxed">Shoutout for their inspiring work at Anokha'26! 🎉</div>
+        </div>
+        <!-- Developers -->
+        <div class="border-t border-green-500/20 pt-4">
+            <div class="text-green-500/50 text-xs mb-3 tracking-wider">CODE BLAST DEVELOPERS</div>
+            <div class="space-y-2">
+                <a href="https://www.linkedin.com/in/sohansoma/" target="_blank" class="flex items-center gap-2 text-cyan-400 text-xs font-bold hover:text-cyan-300 hover:underline transition-colors">
+                    <span>↗</span> Sohan Soma
+                </a>
+                <a href="https://www.linkedin.com/in/leeladhar-kaluru-7927b632a" target="_blank" class="flex items-center gap-2 text-cyan-400 text-xs font-bold hover:text-cyan-300 hover:underline transition-colors">
+                    <span>↗</span> Leeladhar Kaluru
+                </a>
+            </div>
+        </div>
+    </div> <!-- end credits -->
+
+    </div> <!-- end flex wrapper -->
+
+    <!-- Footer -->
+    <p class="mt-8 text-green-500/30 text-xs tracking-widest">
+        💣 CODE DEFUSER: WIRE EDITION &nbsp;·&nbsp; SCORES ARE GLOBAL &nbsp;·&nbsp; X-KERNEL TEAM
+    </p>
+
+    <style>
+        .tab-btn {
+            border: 1px solid rgba(0,255,0,0.2);
+            color: rgba(0,255,0,0.5);
+        }
+        .tab-btn:hover { border-color: rgba(0,255,0,0.5); color: rgba(0,255,0,0.8); }
+        .active-tab {
+            border-color: rgba(0,255,0,0.7) !important;
+            color: #4ade80 !important;
+            background: rgba(0,255,0,0.08);
+            box-shadow: 0 0 10px rgba(0,255,0,0.2);
+        }
+    </style>
+
+<script>
+// ─── Firebase ─────────────────────────────────────────────────────────────────
+const firebaseConfig = {
+    apiKey:            "AIzaSyBh84wT5CIkxXOkpC09dmLRfmCD_SGV0IM",
+    authDomain:        "codeblast-e10aa.firebaseapp.com",
+    databaseURL:       "https://codeblast-e10aa-default-rtdb.firebaseio.com",
+    projectId:         "codeblast-e10aa",
+    storageBucket:     "codeblast-e10aa.firebasestorage.app",
+    messagingSenderId: "522975475620",
+    appId:             "1:522975475620:web:ac791b2d8d40f2d6d7f331"
+};
+
+let database = null;
+try {
+    firebase.initializeApp(firebaseConfig);
+    database = firebase.database();
+} catch (e) {
+    console.warn('Firebase init failed, using localStorage fallback', e);
+}
+
+// ─── State ────────────────────────────────────────────────────────────────────
+let allScores = [];
+let currentFilter = 'all';
+
+// ─── Fetch & render ───────────────────────────────────────────────────────────
+async function loadLeaderboard() {
+    // Spin refresh icon
+    const icon = document.getElementById('refresh-icon');
+    icon.classList.add('spin');
+
+    try {
+        if (database) {
+            const snap = await database.ref('scores').once('value');
+            const raw = snap.val();
+            allScores = raw ? Object.values(raw) : [];
+        } else {
+            throw new Error('no db');
+        }
+    } catch (e) {
+        document.getElementById('error-state').classList.remove('hidden');
+        // Fallback to localStorage
+        allScores = JSON.parse(localStorage.getItem('codeDefuserScores') || '[]');
+    }
+
+    icon.classList.remove('spin');
+    document.getElementById('last-updated').textContent =
+        'Updated ' + new Date().toLocaleTimeString();
+
+    renderLeaderboard();
+}
+
+function filterScores(scores) {
+    if (currentFilter === 'all') return scores;
+
+    const now = new Date();
+    return scores.filter(s => {
+        if (!s.timestamp) return true;
+        const t = new Date(s.timestamp);
+        if (currentFilter === 'today') {
+            return t.toDateString() === now.toDateString();
+        }
+        if (currentFilter === 'week') {
+            const weekAgo = new Date(now);
+            weekAgo.setDate(now.getDate() - 7);
+            return t >= weekAgo;
+        }
+        return true;
+    });
+}
+
+function renderLeaderboard() {
+    const filtered = filterScores(allScores);
+
+    // Sort best-score-per-player (deduplicate by username keeping highest)
+    const bestByPlayer = {};
+    filtered.forEach(s => {
+        const key = (s.username || 'Unknown').toLowerCase();
+        if (!bestByPlayer[key] || s.score > bestByPlayer[key].score) {
+            bestByPlayer[key] = s;
+        }
+    });
+    const ranked = Object.values(bestByPlayer).sort((a, b) => b.score - a.score);
+
+    // Stats
+    document.getElementById('stat-players').textContent = ranked.length || '0';
+    document.getElementById('stat-top').textContent     = ranked.length ? ranked[0].score.toLocaleString() : '—';
+    const avg = ranked.length
+        ? Math.round(ranked.reduce((acc, s) => acc + s.score, 0) / ranked.length)
+        : 0;
+    document.getElementById('stat-avg').textContent = ranked.length ? avg.toLocaleString() : '—';
+
+    const container = document.getElementById('leaderboard-rows');
+    const emptyEl   = document.getElementById('empty-state');
+
+    if (ranked.length === 0) {
+        container.innerHTML = '';
+        emptyEl.classList.remove('hidden');
+        return;
+    }
+    emptyEl.classList.add('hidden');
+
+    container.innerHTML = ranked.map((entry, idx) => buildRow(entry, idx)).join('');
+}
+
+function buildRow(entry, idx) {
+    const rank = idx + 1;
+    const username = (entry.username || 'Unknown').toUpperCase();
+    const score    = (entry.score || 0).toLocaleString();
+    const round    = entry.round ? `R${entry.round} Q${entry.question || '?'}` : '—';
+    const hasMusicAura = entry.musicAura;
+
+    // Date — compact
+    let dateStr = '—';
+    if (entry.timestamp) {
+        const d = new Date(entry.timestamp);
+        dateStr = `${d.getMonth()+1}/${d.getDate()}`;
+    } else if (entry.date) {
+        dateStr = entry.date.split(',')[0];
+    }
+
+    // Rank styling
+    let rankEl, rowBg, rowBorder, rowGlow;
+    if (rank === 1) {
+        rankEl    = `<span class="rank-1-badge inline-flex items-center justify-center w-8 h-8 rounded-full bg-yellow-500/20 text-yellow-400 font-bold text-sm border border-yellow-500/60">🥇</span>`;
+        rowBg     = 'bg-yellow-950/30';
+        rowBorder = 'border border-yellow-500/40';
+        rowGlow   = 'box-glow-gold shimmer';
+    } else if (rank === 2) {
+        rankEl    = `<span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gray-500/20 text-gray-300 font-bold text-sm border border-gray-400/40">🥈</span>`;
+        rowBg     = 'bg-gray-950/30';
+        rowBorder = 'border border-gray-400/30';
+        rowGlow   = 'box-glow-silver shimmer';
+    } else if (rank === 3) {
+        rankEl    = `<span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-orange-900/30 text-orange-400 font-bold text-sm border border-orange-500/40">🥉</span>`;
+        rowBg     = 'bg-orange-950/20';
+        rowBorder = 'border border-orange-500/30';
+        rowGlow   = 'box-glow-bronze shimmer';
+    } else {
+        rankEl    = `<span class="inline-flex items-center justify-center w-8 h-8 text-green-500/60 font-bold text-sm">#${rank}</span>`;
+        rowBg     = 'bg-black/40';
+        rowBorder = 'border border-green-500/15';
+        rowGlow   = '';
+    }
+
+    const auraTag = hasMusicAura
+        ? `<span title="Music Aura unlocked" class="ml-1 text-xs" style="color:#c084fc;">🎵</span>`
+        : '';
+
+    return `
+    <div class="leaderboard-row grid grid-cols-12 gap-2 items-center px-3 py-3 rounded-lg ${rowBg} ${rowBorder} ${rowGlow}">
+        <div class="col-span-1 flex justify-center">${rankEl}</div>
+        <div class="col-span-5 flex items-center gap-2 min-w-0">
+            <span class="font-bold text-green-300 truncate" style="${rank<=3?'text-shadow:0 0 8px rgba(0,255,0,0.5);':''}">${username}</span>
+            ${auraTag}
+        </div>
+        <div class="col-span-2 text-center font-bold ${rank===1?'text-yellow-400 glow-yellow':rank===2?'text-gray-300':'text-green-400'}">${score}</div>
+        <div class="col-span-2 text-center text-green-500/60 text-xs tracking-wider">${round}</div>
+        <div class="col-span-2 text-right text-green-500/40 text-xs">${dateStr}</div>
+    </div>`;
+}
+
+// ─── Filter tabs ──────────────────────────────────────────────────────────────
+function setFilter(filter, btn) {
+    currentFilter = filter;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active-tab'));
+    btn.classList.add('active-tab');
+    renderLeaderboard();
+}
+
+// ─── Auto-refresh every 30 s ──────────────────────────────────────────────────
+loadLeaderboard();
+setInterval(loadLeaderboard, 30000);
+</script>
+</body>
+</html>
