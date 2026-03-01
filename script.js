@@ -1314,21 +1314,51 @@ async function gameOver() {
     stopTimer();
     hideWireCuttingUI();
     
-    // Save score
     await saveScore();
-    
-    // Get leaderboard
     const leaderboard = await getLeaderboard();
     const leaderboardHTML = createLeaderboardHTML(leaderboard, score, username);
     
     modalTitle.textContent = 'GAME OVER 💥';
     modalTitle.className = 'text-4xl font-bold mb-4 text-red-500';
-    const endCreditsHTML = `<div class="border border-green-500/30 rounded-xl p-4 bg-black/60 text-left"><div class="text-green-400 font-bold text-sm mb-4 tracking-widest border-b border-green-500/20 pb-2">🎬 END CREDITS</div><div class="flex items-center gap-2 mb-3 p-2 rounded-lg" style="background:rgba(0,25,25,0.8);border:1px solid rgba(0,210,190,0.35);"><img src="JioSaavn.png" alt="JioSaavn" style="height:20px;filter:drop-shadow(0 0 5px rgba(0,210,190,0.6));"><div><div class="text-xs font-bold" style="color:#5eead4;">Official Music Streaming Partner</div><div class="text-xs" style="color:rgba(94,234,212,0.5);">Thanks for making Code Blast possible!</div></div></div><div class="flex items-center gap-2 mb-4 p-2 rounded-lg border border-yellow-900/30" style="background:rgba(0,0,0,0.5);"><img src="engineerman.png" alt="EngineerMan" style="height:28px;width:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(250,204,21,0.35);"><div><div class="text-yellow-400 text-xs font-bold">⚡ EngineerMan</div><div class="text-yellow-500/50 text-xs">Piston API &amp; Inspiration</div></div></div><div class="border border-purple-500/30 rounded-lg p-2 mb-4" style="background:rgba(88,28,135,0.25);"><div class="text-purple-300 text-xs font-bold tracking-widest mb-1">🙌 X-KERNEL TEAM</div><div class="text-purple-300/60 text-xs">Shoutout for their inspiring work at Anokha'26! 🎉</div></div><div class="border-t border-green-500/15 pt-3"><div class="text-green-500/50 text-xs mb-2 tracking-wider">CODE BLAST DEVELOPERS</div><a href="https://www.linkedin.com/in/sohansoma/" target="_blank" class="block text-cyan-400 text-xs hover:underline mb-1">↗ Sohan Soma</a><a href="https://www.linkedin.com/in/leeladhar-kaluru-7927b632a" target="_blank" class="block text-cyan-400 text-xs hover:underline">↗ Leeladhar Kaluru</a></div></div>`;
+    const endCreditsHTML = `<div class="border border-green-500/30 rounded-xl p-4 bg-black/60 text-left">
+        <div class="text-green-400 font-bold text-sm mb-4 tracking-widest border-b border-green-500/20 pb-2">🎬 END CREDITS</div>
+        <div class="flex items-center gap-2 mb-3 p-2 rounded-lg" style="background:rgba(0,25,25,0.8);border:1px solid rgba(0,210,190,0.35);">
+            <img src="JioSaavn.png" alt="JioSaavn" style="height:20px;filter:drop-shadow(0 0 5px rgba(0,210,190,0.6));">
+            <div>
+                <div class="text-xs font-bold" style="color:#5eead4;">Official Music Streaming Partner</div>
+                <div class="text-xs" style="color:rgba(94,234,212,0.5);">Thanks for making Code Blast possible!</div>
+            </div>
+        </div>
+        <div class="flex items-center gap-2 mb-4 p-2 rounded-lg border border-yellow-900/30" style="background:rgba(0,0,0,0.5);">
+            <img src="engineerman.png" alt="EngineerMan" style="height:28px;width:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(250,204,21,0.35);">
+            <div>
+                <div class="text-yellow-400 text-xs font-bold">⚡ EngineerMan</div>
+                <div class="text-yellow-500/50 text-xs">Piston API &amp; Inspiration</div>
+            </div>
+        </div>
+        <div class="border border-purple-500/30 rounded-lg p-3 mb-4" style="background:rgba(88,28,135,0.25);">
+            <div class="text-purple-300 text-xs font-bold tracking-widest mb-1">🙌 X-KERNEL TEAM</div>
+            <div class="text-purple-300/70 text-xs mb-2">Shoutout for their inspiring work at Anokha'26! 🎉</div>
+            <div class="flex gap-3 mt-2">
+                <a href="https://www.linkedin.com/company/x-kernel/" target="_blank" class="flex items-center gap-1 text-xs px-2 py-1 rounded" style="background:rgba(10,102,194,0.25);border:1px solid rgba(10,102,194,0.5);color:#7dd3fc;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                    LinkedIn
+                </a>
+                <a href="https://www.instagram.com/xkernel_griet/" target="_blank" class="flex items-center gap-1 text-xs px-2 py-1 rounded" style="background:rgba(225,48,108,0.2);border:1px solid rgba(225,48,108,0.45);color:#f9a8d4;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                    Instagram
+                </a>
+            </div>
+        </div>
+        <div class="border-t border-green-500/15 pt-3">
+            <div class="text-green-500/50 text-xs mb-2 tracking-wider">CODE BLAST DEVELOPERS</div>
+            <a href="https://www.linkedin.com/in/sohansoma/" target="_blank" class="block text-cyan-400 text-xs hover:underline mb-1">↗ Sohan Soma</a>
+            <a href="https://www.linkedin.com/in/leeladhar-kaluru-7927b632a" target="_blank" class="block text-cyan-400 text-xs hover:underline">↗ Leeladhar Kaluru</a>
+        </div>
+    </div>`;
     modalMessage.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div><div class="text-green-300 mb-3">Agent: <span class="text-green-400 font-bold">${username}</span></div><div class="text-red-400">The bomb exploded!</div><div class="text-green-300 mt-1">Round ${currentRound + 1}, Question ${currentQuestion + 1}</div><div class="text-green-400 font-bold text-2xl mt-3">Final Score: ${score}</div>${leaderboardHTML}</div>${endCreditsHTML}</div>`;
     
     modalButtons.innerHTML = '';
-    
-    // Close button
     const closeBtn = document.createElement('button');
     closeBtn.textContent = 'Close';
     closeBtn.className = 'w-full p-3 bg-gray-600 hover:bg-gray-500 text-white font-bold rounded-lg';
@@ -1343,21 +1373,51 @@ async function winGame() {
     stopTimer();
     hideWireCuttingUI();
     
-    // Save score
     await saveScore();
-    
-    // Get leaderboard
     const leaderboard = await getLeaderboard();
     const leaderboardHTML = createLeaderboardHTML(leaderboard, score, username);
     
     modalTitle.textContent = 'MASTER DEFUSER! 🏆';
     modalTitle.className = 'text-4xl font-bold mb-4 text-green-400';
-    const endCreditsHTML2 = `<div class="border border-green-500/30 rounded-xl p-4 bg-black/60 text-left"><div class="text-green-400 font-bold text-sm mb-4 tracking-widest border-b border-green-500/20 pb-2">🎬 END CREDITS</div><div class="flex items-center gap-2 mb-3 p-2 rounded-lg" style="background:rgba(0,25,25,0.8);border:1px solid rgba(0,210,190,0.35);"><img src="JioSaavn.png" alt="JioSaavn" style="height:20px;filter:drop-shadow(0 0 5px rgba(0,210,190,0.6));"><div><div class="text-xs font-bold" style="color:#5eead4;">Official Music Streaming Partner</div><div class="text-xs" style="color:rgba(94,234,212,0.5);">Thanks for making Code Blast possible!</div></div></div><div class="flex items-center gap-2 mb-4 p-2 rounded-lg border border-yellow-900/30" style="background:rgba(0,0,0,0.5);"><img src="engineerman.png" alt="EngineerMan" style="height:28px;width:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(250,204,21,0.35);"><div><div class="text-yellow-400 text-xs font-bold">⚡ EngineerMan</div><div class="text-yellow-500/50 text-xs">Piston API &amp; Inspiration</div></div></div><div class="border border-purple-500/30 rounded-lg p-2 mb-4" style="background:rgba(88,28,135,0.25);"><div class="text-purple-300 text-xs font-bold tracking-widest mb-1">🙌 X-KERNEL TEAM</div><div class="text-purple-300/60 text-xs">Shoutout for their inspiring work at Anokha'26! 🎉</div></div><div class="border-t border-green-500/15 pt-3"><div class="text-green-500/50 text-xs mb-2 tracking-wider">CODE BLAST DEVELOPERS</div><a href="https://www.linkedin.com/in/sohansoma/" target="_blank" class="block text-cyan-400 text-xs hover:underline mb-1">↗ Sohan Soma</a><a href="https://www.linkedin.com/in/leeladhar-kaluru-7927b632a" target="_blank" class="block text-cyan-400 text-xs hover:underline">↗ Leeladhar Kaluru</a></div></div>`;
+    const endCreditsHTML2 = `<div class="border border-green-500/30 rounded-xl p-4 bg-black/60 text-left">
+        <div class="text-green-400 font-bold text-sm mb-4 tracking-widest border-b border-green-500/20 pb-2">🎬 END CREDITS</div>
+        <div class="flex items-center gap-2 mb-3 p-2 rounded-lg" style="background:rgba(0,25,25,0.8);border:1px solid rgba(0,210,190,0.35);">
+            <img src="JioSaavn.png" alt="JioSaavn" style="height:20px;filter:drop-shadow(0 0 5px rgba(0,210,190,0.6));">
+            <div>
+                <div class="text-xs font-bold" style="color:#5eead4;">Official Music Streaming Partner</div>
+                <div class="text-xs" style="color:rgba(94,234,212,0.5);">Thanks for making Code Blast possible!</div>
+            </div>
+        </div>
+        <div class="flex items-center gap-2 mb-4 p-2 rounded-lg border border-yellow-900/30" style="background:rgba(0,0,0,0.5);">
+            <img src="engineerman.png" alt="EngineerMan" style="height:28px;width:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(250,204,21,0.35);">
+            <div>
+                <div class="text-yellow-400 text-xs font-bold">⚡ EngineerMan</div>
+                <div class="text-yellow-500/50 text-xs">Piston API &amp; Inspiration</div>
+            </div>
+        </div>
+        <div class="border border-purple-500/30 rounded-lg p-3 mb-4" style="background:rgba(88,28,135,0.25);">
+            <div class="text-purple-300 text-xs font-bold tracking-widest mb-1">🙌 X-KERNEL TEAM</div>
+            <div class="text-purple-300/70 text-xs mb-2">Shoutout for their inspiring work at Anokha'26! 🎉</div>
+            <div class="flex gap-3 mt-2">
+                <a href="https://www.linkedin.com/company/x-kernel/" target="_blank" class="flex items-center gap-1 text-xs px-2 py-1 rounded" style="background:rgba(10,102,194,0.25);border:1px solid rgba(10,102,194,0.5);color:#7dd3fc;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                    LinkedIn
+                </a>
+                <a href="https://www.instagram.com/xkernel_griet/" target="_blank" class="flex items-center gap-1 text-xs px-2 py-1 rounded" style="background:rgba(225,48,108,0.2);border:1px solid rgba(225,48,108,0.45);color:#f9a8d4;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                    Instagram
+                </a>
+            </div>
+        </div>
+        <div class="border-t border-green-500/15 pt-3">
+            <div class="text-green-500/50 text-xs mb-2 tracking-wider">CODE BLAST DEVELOPERS</div>
+            <a href="https://www.linkedin.com/in/sohansoma/" target="_blank" class="block text-cyan-400 text-xs hover:underline mb-1">↗ Sohan Soma</a>
+            <a href="https://www.linkedin.com/in/leeladhar-kaluru-7927b632a" target="_blank" class="block text-cyan-400 text-xs hover:underline">↗ Leeladhar Kaluru</a>
+        </div>
+    </div>`;
     modalMessage.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div><div class="text-green-300 mb-3">Agent: <span class="text-green-400 font-bold">${username}</span></div><div class="text-green-400">Incredible! You've defused all bombs!</div><div class="text-green-400 font-bold text-3xl mt-3">Final Score: ${score}</div>${leaderboardHTML}</div>${endCreditsHTML2}</div>`;
     
     modalButtons.innerHTML = '';
-    
-    // Celebrate button
     const closeBtn = document.createElement('button');
     closeBtn.textContent = 'Celebrate! 🎉';
     closeBtn.className = 'w-full p-3 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-lg';
@@ -1623,3 +1683,4 @@ passwordInput.addEventListener('keypress', (e) => {
         startGameBtn.click();
     }
 });
+
